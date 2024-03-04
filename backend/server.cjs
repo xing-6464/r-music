@@ -1,28 +1,28 @@
 const express = require('express')
 // const { createServer } = require('vite')
-const registerRouter = require('./router')
+const registerRouter = require('./router.cjs')
 
-async function createViteServer() {
-  const app = express()
-  // const vite = await createServer({
-  //   server: { middlewareMode: true },
-  //   appType: 'custom',
-  // })
-  registerRouter(app)
+// async function createViteServer() {
+//   const app = express()
+//   // const vite = await createServer({
+//   //   server: { middlewareMode: true },
+//   //   appType: 'custom',
+//   // })
+//   registerRouter(app)
 
-  // app.use(vite.middlewares)
+//   // app.use(vite.middlewares)
 
-  app.listen(5173)
-}
+//   app.listen(5173)
+// }
 
-createViteServer()
+// createViteServer()
 
 // import express from 'express'
-// import { createServer } from 'vite'
 // import registerRouter from './router'
 
-// const parentServer = express()
-// registerRouter(parentServer)
+const app = express()
+registerRouter(app)
+app.listen(5174)
 
 // const vite = await createServer({
 //   server: {
