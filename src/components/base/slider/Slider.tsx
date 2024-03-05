@@ -4,12 +4,7 @@ import cls from 'classnames'
 import useSlider from './useSlider'
 
 import styles from './Slider.module.scss'
-
-export type Sliders = {
-  id: string
-  link: string
-  pic: string
-}[]
+import { Sliders } from '../../../view/type'
 
 interface SliderProps {
   sliders: Sliders
@@ -20,7 +15,6 @@ const Slider: FC<SliderProps> = ({ sliders }) => {
   const { currentPageIndex } = useSlider(rootRef)
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <div className={styles.slider} ref={rootRef as unknown as any}>
       <div className={styles['slider-group']}>
         {sliders.map((item) => {
