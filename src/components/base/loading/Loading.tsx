@@ -6,7 +6,7 @@ interface LoadingProps {
   title?: string
 }
 
-const Loading: FC<LoadingProps> = ({ title = '正在加载...' }) => {
+const Loading: FC<LoadingProps> = ({ title = '正在加载' }) => {
   return (
     <div className={styles['loading']}>
       <div className={styles['loading-content']}>
