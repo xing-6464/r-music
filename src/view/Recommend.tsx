@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { getRecommend } from '../service/recommend'
 import styles from './Recommend.module.scss'
 import Slider from '../components/base/slider/Slider'
 import Scroll from '../components/base/scroll/Scroll'
 import type { Albums, Sliders } from './type'
+import defaultImg from '../assets/images/default.png'
 
 function Recommend() {
   const [sliders, setSliders] = useState<Sliders>([])
@@ -34,7 +35,11 @@ function Recommend() {
               {albums.map((item) => (
                 <li className={styles['item']} key={item.id}>
                   <div className={styles['icon']}>
-                    <img src={item.pic} width="60" height="60" />
+                    <Suspense
+                      fallback={<img src={defaultImg} height="60" width="60" />}
+                    >
+                      <img src={item.pic} height="60" width="60" />
+                    </Suspense>
                   </div>
                   <div className={styles['text']}>
                     <h2 className={styles['name']}>{item.username}</h2>
