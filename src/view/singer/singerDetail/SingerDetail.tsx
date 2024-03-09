@@ -14,6 +14,7 @@ import { Songs } from '@/types/type'
 function SingerDetail() {
   const { singer } = useSinger()
   const [songs, setSongs] = useState<Songs>([])
+  const [loading, setLoading] = useState(true)
 
   const pic = useMemo(() => {
     return singer && singer.pic
@@ -29,6 +30,7 @@ function SingerDetail() {
         const result = await getSingerDetail(singer)
         const songs = await processSongs(result.songs)
         setSongs(songs)
+        setLoading(false)
       }
     }
     get()
@@ -39,6 +41,7 @@ function SingerDetail() {
         songs={songs}
         pic={pic ? pic : ''}
         title={title ? title : ''}
+        loading={loading}
       />
     </div>
   )

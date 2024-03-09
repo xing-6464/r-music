@@ -9,7 +9,7 @@
   font-style: normal;
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="_icon-"], [class*=" _icon-"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'music-icon' !important;
   speak: none;
@@ -92,11 +92,13 @@
   content: "\e910";
 }
 
-.icon-back:before {
+[class^="_icon-back"]:before {
   content: "\e911";
 }
+// .icon-back:before {
+// }
 
-.icon-mine:before {
+[class^="_icon-mine"]:before {
   content: "\e912";
 }
 
