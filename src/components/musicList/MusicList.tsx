@@ -58,6 +58,17 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
     }
   }, [imageHeight])
 
+  const filterStyle = useMemo<CSSProperties>(() => {
+    let blur = 0
+    if (scrollY >= 0) {
+      blur = Math.min(maxTranslateY / imageHeight, scrollY / imageHeight) * 20
+    }
+
+    return {
+      backdropFilter: `blur(${blur}px)`,
+    }
+  }, [scrollY, imageHeight, maxTranslateY])
+
   useEffect(() => {
     if (imageRef.current) {
       setImageHeight(imageRef.current?.clientHeight)
@@ -86,7 +97,7 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
             <span className={styles['text']}>随机播放全部</span>
           </div>
         </div> */}
-        <div className={styles['filter']}></div>
+        <div className={styles['filter']} style={filterStyle}></div>
       </div>
       {!loading ? (
         <Scroll
