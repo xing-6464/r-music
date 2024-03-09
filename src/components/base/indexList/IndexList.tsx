@@ -14,10 +14,22 @@ interface IndexListProps {
 const IndexList: FC<IndexListProps> = ({ data }) => {
   const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } =
     useFixed(data)
-  const { shortcutList } = useShortCut(data)
+  const {
+    shortcutList,
+    onShortcutTouchEnd,
+    onShortcutTouchMove,
+    onShortcutTouchStart,
+    scrollRef,
+  } = useShortCut(data, groupRef)
 
   return (
-    <Scroll cls={styles['index-list']} click probeType={3} emit={onScroll}>
+    <Scroll
+      cls={styles['index-list']}
+      click
+      probeType={3}
+      emit={onScroll}
+      ref={scrollRef}
+    >
       <>
         <ul ref={groupRef}>
           {data.map((group) => (
@@ -41,14 +53,19 @@ const IndexList: FC<IndexListProps> = ({ data }) => {
             <div className={styles['fixed-title']}>{fixedTitle}</div>
           </div>
         )}
-        <div className={styles.shortcut}>
+        <div
+          className={styles.shortcut}
+          onTouchStart={(e) => onShortcutTouchStart(e)}
+          onTouchMove={(e) => onShortcutTouchMove(e)}
+          onTouchEnd={(e) => onShortcutTouchEnd(e)}
+        >
           <ul>
             {shortcutList.map((item, index) => {
               const cls = classNames(styles.item, {
                 [styles.current]: currentIndex === index,
               })
               return (
-                <li key={item} className={cls}>
+                <li key={item} className={cls} data-index={index}>
                   {item}
                 </li>
               )

@@ -29,4 +29,6 @@ export default function useScroll(
       scroll.current?.destroy()
     }
   }, [])
+
+  return scroll
 }

@@ -39,7 +39,7 @@ export default function useFixed(data: Singers) {
         setDistance(heightBottom - scrollY)
       }
     }
-  }, [scrollY])
+  }, [scrollY, listHeight])
 
   const calculate = () => {
     const list = groupRef.current?.children
