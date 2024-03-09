@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import getSingerList from '../service/singer'
-import { Singers } from './type'
+import { getSingerList } from '../../service/singer'
+import { Singers } from '../../types/type'
 
 import styles from './Singer.module.scss'
-import IndexList from '../components/base/indexList/IndexList'
-import Loading from '../components/base/loading/Loading'
+import IndexList from '../../components/base/indexList/IndexList'
+import Loading from '../../components/base/loading/Loading'
 
 function Singer() {
   const [singers, setSingers] = useState<Singers>([])

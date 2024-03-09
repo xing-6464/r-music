@@ -1,9 +1,9 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from '../App'
-import Recommend from '../view/Recommend'
-import Search from '../view/Search'
-import Singer from '../view/Singer'
-import TopList from '../view/TopList'
+import Recommend from '../view/recommend/Recommend'
+import Search from '../view/search/Search'
+import Singer from '../view/singer/Singer'
+import TopList from '../view/topList/TopList'
 
 const router = createBrowserRouter([
   {

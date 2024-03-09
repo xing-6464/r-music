@@ -1,5 +1,5 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
-import { Singers } from '../../../view/type'
+import { Singers } from '../../../types/type'
 
 export default function useFixed(data: Singers) {
   const groupRef = useRef<HTMLUListElement | null>(null)

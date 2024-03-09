@@ -4,7 +4,7 @@ import cls from 'classnames'
 import useSlider from './useSlider'
 
 import styles from './Slider.module.scss'
-import { Sliders } from '../../../view/type'
+import { Sliders } from '../../../types/type'
 
 interface SliderProps {
   sliders: Sliders

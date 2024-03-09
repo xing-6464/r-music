@@ -1,4 +1,4 @@
-import { Singers } from '@/view/type'
+import { Singers } from '@/types/type'
 import React, { useMemo, useRef, useState } from 'react'
 
 export default function useShortCut(
@@ -17,7 +17,7 @@ export default function useShortCut(
 
   const [touch, setTouch] = useState<{
     y1?: number
-    y2?: number
+    // y2?: number
     anchorIndex?: number
   } | null>(null)
 
@@ -28,7 +28,7 @@ export default function useShortCut(
 
   function onShortcutTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     stopAndDefault(e)
-    const anchorIndex = parseInt(e.target.dataset.index)
+    const anchorIndex = parseInt((e.target as unknown as any).dataset.index)
     setTouch((prev) => ({
       ...prev,
       y1: e.touches[0].pageY,
@@ -39,12 +39,12 @@ export default function useShortCut(
 
   function onShortcutTouchMove(e: React.TouchEvent<HTMLDivElement>) {
     stopAndDefault(e)
-    setTouch((prev) => ({ ...prev, y2: e.touches[0].pageY }))
-    if (touch && touch.y2 && touch.y1 && touch.anchorIndex) {
-      const delta = ((touch.y2 - touch.y1) / ANCHOR_HEIGHT) | 0
+    if (touch && touch.y1 && touch.anchorIndex) {
+      const delta = ((e.touches[0].pageY - touch.y1) / ANCHOR_HEIGHT) | 0
       const anchorIndex = touch.anchorIndex + delta
       scrollTo(anchorIndex)
     }
+    // setTouch((prev) => ({ ...prev }))
   }
 
   function onShortcutTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
@@ -58,7 +58,7 @@ export default function useShortCut(
     index = Math.max(0, Math.min(shortcutList.length - 1, index))
     const targetEl = groupRef.current?.children[index]
     const scroll = scrollRef.current.scroll.current
-    scroll.scrollToElement(targetEl, 20, false, false)
+    scroll.scrollToElement(targetEl, 30, false, false)
   }
 
   return {

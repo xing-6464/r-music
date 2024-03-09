@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { getRecommend } from '../service/recommend'
+import { getRecommend } from '@/service/recommend'
 import styles from './Recommend.module.scss'
-import Slider from '../components/base/slider/Slider'
-import Scroll from '../components/base/scroll/Scroll'
-import type { Albums, Sliders } from './type'
-import Loading from '../components/base/loading/Loading'
+import Slider from '@/components/base/slider/Slider'
+import Scroll from '@/components/base/scroll/Scroll'
+import type { Albums, Sliders } from '../../types/type'
+import Loading from '@/components/base/loading/Loading'
 
 function Recommend() {
   const [sliders, setSliders] = useState<Sliders>([])

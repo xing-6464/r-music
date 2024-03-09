@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { Singers } from '@/view/type'
+import { Singers } from '@/types/type'
 import Scroll from '../scroll/Scroll'
 import styles from './IndexList.module.scss'
 import useFixed from './useFixed'
