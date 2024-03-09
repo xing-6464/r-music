@@ -15,16 +15,43 @@ interface MusicListProps {
 }
 
 function MusicList({ songs, title, pic, loading }: MusicListProps) {
+  const RESERVED_HEIGHT = 40
+
   const [imageHeight, setImageHeight] = useState<number>(0)
   const imageRef = useRef<HTMLDivElement | null>(null)
+  const [scrollY, setScrollY] = useState<number>(0)
+  const [maxTranslateY, setMaxTranslateY] = useState<number>(0)
 
   const nav = useNavigate()
 
   const bgImageStyle = useMemo<CSSProperties>(() => {
-    return {
-      backgroundImage: `url(${pic})`,
+    let zIndex = 0
+    let paddingTop: string | number = '70%'
+    let height: number | string = 0
+    let translateZ = 0
+
+    if (scrollY > maxTranslateY) {
+      zIndex = 10
+      paddingTop = 0
+      height = `${RESERVED_HEIGHT}px`
+      translateZ = 1
     }
-  }, [pic])
+
+    let scale = 1
+    if (scrollY < 0) {
+      scale = 1 + Math.abs(scrollY / imageHeight)
+      console.log(scale)
+    }
+
+    return {
+      zIndex,
+      paddingTop,
+      height,
+      backgroundImage: `url(${pic})`,
+      transform: `scale(${scale}) translateZ(${translateZ}px)`,
+    }
+  }, [pic, scrollY, maxTranslateY, imageHeight])
+
   const scrollStyle = useMemo<CSSProperties>(() => {
     return {
       top: `${imageHeight}px`,
@@ -32,11 +59,18 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
   }, [imageHeight])
 
   useEffect(() => {
-    if (imageRef.current) setImageHeight(imageRef.current?.clientHeight)
-  }, [imageRef])
+    if (imageRef.current) {
+      setImageHeight(imageRef.current?.clientHeight)
+      setMaxTranslateY(imageHeight - RESERVED_HEIGHT)
+    }
+  }, [imageRef, imageHeight])
 
   function goBack() {
     nav(-1)
+  }
+
+  function onScroll(pos: any) {
+    setScrollY(-pos.y)
   }
 
   return (
@@ -55,7 +89,12 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
         <div className={styles['filter']}></div>
       </div>
       {!loading ? (
-        <Scroll cls={styles['list']} styles={scrollStyle}>
+        <Scroll
+          cls={styles['list']}
+          styles={scrollStyle}
+          probeType={3}
+          emit={onScroll}
+        >
           <div className={styles['song-list-wrapper']}>
             <SongList songs={songs} />
           </div>
