@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { Singers } from '../../../view/type'
+import { Singers } from '@/view/type'
 import Scroll from '../scroll/Scroll'
 import styles from './IndexList.module.scss'
 import useFixed from './useFixed'
@@ -9,7 +9,7 @@ interface IndexListProps {
   data: Singers
 }
 const IndexList: FC<IndexListProps> = ({ data }) => {
-  const { groupRef, fixedTitle, onScroll } = useFixed(data)
+  const { groupRef, fixedTitle, fixedStyle, onScroll } = useFixed(data)
   return (
     <Scroll cls={styles['index-list']} click probeType={3} emit={onScroll}>
       <>
@@ -31,7 +31,7 @@ const IndexList: FC<IndexListProps> = ({ data }) => {
         {!fixedTitle ? (
           <></>
         ) : (
-          <div className={styles.fixed}>
+          <div className={styles.fixed} style={fixedStyle}>
             <div className={styles['fixed-title']}>{fixedTitle}</div>
           </div>
         )}

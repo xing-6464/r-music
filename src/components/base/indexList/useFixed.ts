@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { Singers } from '../../../view/type'
 
 export default function useFixed(data: Singers) {
@@ -6,6 +6,9 @@ export default function useFixed(data: Singers) {
   const [listHeight, setListHeight] = useState<number[]>([])
   const [scrollY, setScrollY] = useState<number>()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [distance, setDistance] = useState(0)
+
+  const TITLE_HEIGHT = 30
 
   const fixedTitle = useMemo(() => {
     if (scrollY && scrollY < 0) {
@@ -14,6 +17,14 @@ export default function useFixed(data: Singers) {
     const currentGroup = data[currentIndex]
     return currentGroup ? currentGroup.title : ''
   }, [currentIndex, data, scrollY])
+
+  const fixedStyle = useMemo<CSSProperties>(() => {
+    const diff =
+      distance > 0 && distance < TITLE_HEIGHT ? distance - TITLE_HEIGHT : 0
+    return {
+      transform: `translate3d(0,${diff}px,0)`,
+    }
+  }, [distance])
 
   useEffect(() => {
     calculate()
@@ -25,6 +36,7 @@ export default function useFixed(data: Singers) {
       const heightBottom = listHeight[i + 1]
       if (scrollY && scrollY >= heightTop && scrollY <= heightBottom) {
         setCurrentIndex(i)
+        setDistance(heightBottom - scrollY)
       }
     }
   }, [scrollY])
@@ -54,5 +66,6 @@ export default function useFixed(data: Singers) {
     groupRef,
     fixedTitle,
     onScroll,
+    fixedStyle,
   }
 }
