@@ -6,6 +6,8 @@ import styles from './Singer.module.scss'
 import IndexList from '../../components/base/indexList/IndexList'
 import Loading from '../../components/base/loading/Loading'
 import { Outlet, useNavigate, useOutletContext } from 'react-router'
+import { SINGER_KEY } from '@/assets/ts/constant'
+import storage from 'good-storage'
 
 type ContentType = { singer?: S }
 
@@ -27,9 +29,13 @@ function Singer() {
 
   function selectSinger(singer: S) {
     setSelectedSinger(singer)
+    cacheSinger(singer)
     nav(`/singer/${singer.mid}`)
   }
 
+  function cacheSinger(singer: S) {
+    storage.session.set(SINGER_KEY, singer)
+  }
   if (isLoading) {
     return <Loading />
   } else {

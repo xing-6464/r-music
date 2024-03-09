@@ -4,7 +4,7 @@ import { Songs } from '@/types/type'
 import styles from './MusicList.module.scss'
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import SongList from '../base/songList/SongList'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import Loading from '../base/loading/Loading'
 
 interface MusicListProps {
@@ -40,7 +40,6 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
     let scale = 1
     if (scrollY < 0) {
       scale = 1 + Math.abs(scrollY / imageHeight)
-      console.log(scale)
     }
 
     return {
