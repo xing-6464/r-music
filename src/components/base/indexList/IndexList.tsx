@@ -1,6 +1,6 @@
 import { FC } from 'react'
 
-import { Singers } from '@/types/type'
+import { Singer, Singers } from '@/types/type'
 import Scroll from '../scroll/Scroll'
 import styles from './IndexList.module.scss'
 import useFixed from './useFixed'
@@ -9,9 +9,10 @@ import classNames from 'classnames'
 
 interface IndexListProps {
   data: Singers
+  select?: (item: Singer) => void
 }
 
-const IndexList: FC<IndexListProps> = ({ data }) => {
+const IndexList: FC<IndexListProps> = ({ data, select }) => {
   const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } =
     useFixed(data)
   const {
@@ -21,6 +22,10 @@ const IndexList: FC<IndexListProps> = ({ data }) => {
     onShortcutTouchStart,
     scrollRef,
   } = useShortCut(data, groupRef)
+
+  function onItemClick(item: Singer) {
+    select?.(item)
+  }
 
   return (
     <Scroll
@@ -37,7 +42,11 @@ const IndexList: FC<IndexListProps> = ({ data }) => {
               <h2 className={styles['title']}>{group.title}</h2>
               <ul>
                 {group.list.map((item) => (
-                  <li key={item.id} className={styles['item']}>
+                  <li
+                    key={item.id}
+                    className={styles['item']}
+                    onClick={() => onItemClick(item)}
+                  >
                     <img className={styles['avatar']} src={item.pic} />
                     <span className={styles['name']}>{item.name}</span>
                   </li>

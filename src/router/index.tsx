@@ -4,6 +4,7 @@ import Recommend from '../view/recommend/Recommend'
 import Search from '../view/search/Search'
 import Singer from '../view/singer/Singer'
 import TopList from '../view/topList/TopList'
+import SingerDetail from '@/view/singer/singerDetail/SingerDetail'
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,12 @@ const router = createBrowserRouter([
       {
         path: '/singer',
         element: <Singer />,
+        children: [
+          {
+            path: ':id',
+            element: <SingerDetail />,
+          },
+        ],
       },
       {
         path: '/search',
