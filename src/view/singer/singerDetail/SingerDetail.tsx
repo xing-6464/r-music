@@ -2,6 +2,7 @@ import styles from './SingerDetail.module.scss'
 import { useEffect } from 'react'
 import { getSingerDetail } from '@/service/singer'
 import { useSinger } from '../Singer'
+import { processSongs } from '@/service/song'
 
 // interface SingerDetailProps {
 //   singer?: Singer
@@ -14,7 +15,8 @@ function SingerDetail() {
     const get = async () => {
       if (singer) {
         const result = await getSingerDetail(singer)
-        console.log(result)
+        const songs = await processSongs(result.songs)
+        console.log(songs)
       }
     }
     get()

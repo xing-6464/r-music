@@ -22,3 +22,16 @@ export type Singers = {
   list: Singer[]
   title: string
 }[]
+
+export interface Song {
+  album: string
+  duration: number
+  id: number
+  mid: string
+  name: string
+  pic: string
+  singer: string
+  url: string
+}
+
+export type Songs = Song[]
