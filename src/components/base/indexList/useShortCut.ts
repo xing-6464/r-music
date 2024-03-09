@@ -22,7 +22,7 @@ export default function useShortCut(
   } | null>(null)
 
   function stopAndDefault(e: React.TouchEvent<HTMLDivElement>) {
-    e.preventDefault()
+    // e.preventDefault()
     e.stopPropagation()
   }
 
@@ -34,8 +34,6 @@ export default function useShortCut(
       y1: e.touches[0].pageY,
       anchorIndex: anchorIndex,
     }))
-    console.log(touch)
-
     scrollTo(anchorIndex)
   }
 
@@ -45,9 +43,6 @@ export default function useShortCut(
     if (touch && touch.y2 && touch.y1 && touch.anchorIndex) {
       const delta = ((touch.y2 - touch.y1) / ANCHOR_HEIGHT) | 0
       const anchorIndex = touch.anchorIndex + delta
-      console.log(touch)
-      console.log(anchorIndex)
-
       scrollTo(anchorIndex)
     }
   }
@@ -57,6 +52,9 @@ export default function useShortCut(
   }
 
   function scrollTo(index: number) {
+    if (isNaN(index)) {
+      return
+    }
     index = Math.max(0, Math.min(shortcutList.length - 1, index))
     const targetEl = groupRef.current?.children[index]
     const scroll = scrollRef.current.scroll.current

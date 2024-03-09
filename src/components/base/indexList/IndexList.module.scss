@@ -63,6 +63,7 @@
     text-align: center;
     background: $color-background-d;
     font-family: Helvetica;
+    touch-action: pan-x pinch-zoom;
 
     .item {
       padding: 3px;
