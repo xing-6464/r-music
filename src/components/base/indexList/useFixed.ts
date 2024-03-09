@@ -67,5 +67,6 @@ export default function useFixed(data: Singers) {
     fixedTitle,
     onScroll,
     fixedStyle,
+    currentIndex,
   }
 }

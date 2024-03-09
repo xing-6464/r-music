@@ -4,12 +4,18 @@ import { Singers } from '@/view/type'
 import Scroll from '../scroll/Scroll'
 import styles from './IndexList.module.scss'
 import useFixed from './useFixed'
+import useShortCut from './useShortCut'
+import classNames from 'classnames'
 
 interface IndexListProps {
   data: Singers
 }
+
 const IndexList: FC<IndexListProps> = ({ data }) => {
-  const { groupRef, fixedTitle, fixedStyle, onScroll } = useFixed(data)
+  const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } =
+    useFixed(data)
+  const { shortcutList } = useShortCut(data)
+
   return (
     <Scroll cls={styles['index-list']} click probeType={3} emit={onScroll}>
       <>
@@ -35,6 +41,20 @@ const IndexList: FC<IndexListProps> = ({ data }) => {
             <div className={styles['fixed-title']}>{fixedTitle}</div>
           </div>
         )}
+        <div className={styles.shortcut}>
+          <ul>
+            {shortcutList.map((item, index) => {
+              const cls = classNames(styles.item, {
+                [styles.current]: currentIndex === index,
+              })
+              return (
+                <li key={item} className={cls}>
+                  {item}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
       </>
     </Scroll>
   )
