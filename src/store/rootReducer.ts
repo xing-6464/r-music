@@ -62,6 +62,19 @@ const playSlice = createSlice({
       state.playList = shuffle(action.payload)
       state.currentIndex = 0
     },
+    changeMode(state: PlayState, action: PayloadAction<number>) {
+      const currentId = currentSong({ root: state }).id
+      const mode = action.payload
+      if (mode === PLAY_MODE.random) {
+        state.playList = shuffle(state.sequenceList)
+      } else {
+        state.playList = state.sequenceList
+      }
+
+      const index = state.playList.findIndex((song) => song.id === currentId)
+      state.currentIndex = index
+      state.playMode = mode
+    },
   },
 })
 
@@ -78,5 +91,6 @@ export const {
   setFullScreen,
   selectPlay,
   randomPlay,
+  changeMode,
 } = playSlice.actions
 export default playSlice.reducer

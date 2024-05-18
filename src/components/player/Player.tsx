@@ -9,11 +9,14 @@ import {
 import styles from './Player.module.scss'
 import { useAppDispatch } from '../../store/hooks'
 import classNames from 'classnames'
+import useMode from './useMode'
 
 function Player() {
+  // state
   const audioRef = useRef<HTMLAudioElement>(null)
   const [songReady, setSongReady] = useState(false)
 
+  // redux
   const dispatch = useAppDispatch()
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
   const currentSong = useAppSelector(getCurrentSong)
@@ -21,6 +24,10 @@ function Player() {
   const currentIndex = useAppSelector((state) => state.root.currentIndex)
   const playList = useAppSelector((state) => state.root.playList)
 
+  // 修改播放模式 hooks
+  const { modeIcon, changeMode } = useMode()
+
+  // computed
   const playIcon = useMemo(() => {
     return playing ? '_icon-pause' : '_icon-play'
   }, [playing])
@@ -28,6 +35,7 @@ function Player() {
     return songReady ? '' : styles.disable
   }, [songReady])
 
+  // useEffect
   useEffect(() => {
     if (!currentSong.id || !currentSong.url) return
     if (!audioRef.current) return
@@ -36,7 +44,6 @@ function Player() {
     audioRef.current.src = currentSong.url
     audioRef.current.play()
   }, [currentSong])
-
   useEffect(() => {
     if (!songReady) return
     if (!audioRef.current) return
@@ -118,7 +125,7 @@ function Player() {
           <div className={styles.bottom}>
             <div className={styles.operators}>
               <div className={classNames(styles.icon, styles['i-left'])}>
-                <i className="_icon-sequence"></i>
+                <i className={modeIcon} onClick={changeMode}></i>
               </div>
               <div
                 className={classNames(
