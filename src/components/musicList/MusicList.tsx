@@ -4,8 +4,10 @@ import { Songs } from '@/types/type'
 import styles from './MusicList.module.scss'
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import SongList from '../base/songList/SongList'
-import { useLocation, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import Loading from '../base/loading/Loading'
+import { useAppDispatch } from '@/store/hooks'
+import { selectPlay } from '@/store/rootReducer'
 
 interface MusicListProps {
   songs: Songs
@@ -17,6 +19,7 @@ interface MusicListProps {
 function MusicList({ songs, title, pic, loading }: MusicListProps) {
   const RESERVED_HEIGHT = 40
 
+  const dispatch = useAppDispatch()
   const [imageHeight, setImageHeight] = useState<number>(0)
   const imageRef = useRef<HTMLDivElement | null>(null)
   const [scrollY, setScrollY] = useState<number>(0)
@@ -83,6 +86,10 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
     setScrollY(-pos.y)
   }
 
+  function selectItem(song: any, index: any) {
+    dispatch(selectPlay({ list: songs, index: index }))
+  }
+
   return (
     <div className={styles['music-list']}>
       <div className={styles['back']} onClick={goBack}>
@@ -106,7 +113,7 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
           emit={onScroll}
         >
           <div className={styles['song-list-wrapper']}>
-            <SongList songs={songs} />
+            <SongList songs={songs} onSelect={selectItem} />
           </div>
         </Scroll>
       ) : (

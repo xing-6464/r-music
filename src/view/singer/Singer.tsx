@@ -36,6 +36,7 @@ function Singer() {
   function cacheSinger(singer: S) {
     storage.session.set(SINGER_KEY, singer)
   }
+
   if (isLoading) {
     return <Loading />
   } else {
