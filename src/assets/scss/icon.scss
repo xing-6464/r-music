@@ -9,7 +9,7 @@
   font-style: normal;
 }
 
-[class^="_icon-"], [class*=" _icon-"] {
+[class^="_icon-"], [class*=" _icon-"], [class^="_icon"] {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'music-icon' !important;
   speak: none;
@@ -24,71 +24,71 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-ok:before {
+[class^="_icon-ok"]:before {
   content: "\e900";
 }
 
-.icon-close:before {
+[class^="_icon-close"]:before {
   content: "\e901";
 }
 
-.icon-add:before {
+[class^="_icon-add"]:before {
   content: "\e902";
 }
 
-.icon-play-mini:before {
+[class^="_icon-play-mini"]:before {
   content: "\e903";
 }
 
-.icon-playlist:before {
+[class^="_icon-playlist"]:before {
   content: "\e904";
 }
 
-.icon-music:before {
+[class^="_icon-music"]:before {
   content: "\e905";
 }
 
-.icon-search:before {
+[class^="_icon-search"]:before {
   content: "\e906";
 }
 
-.icon-clear:before {
+[class^="_icon-clear"]:before {
   content: "\e907";
 }
 
-.icon-delete:before {
+[class^="_icon-delete"]:before {
   content: "\e908";
 }
 
-.icon-favorite:before {
+[class^="_icon-favorite"]:before {
   content: "\e909";
 }
 
-.icon-not-favorite:before {
+[class^="_icon-not-favorite"]:before {
   content: "\e90a";
 }
 
-.icon-pause:before {
+[class^="_icon-pause"]:before {
   content: "\e90b";
 }
 
-.icon-play:before {
+[class^="_icon-play"]:before {
   content: "\e90c";
 }
 
-.icon-prev:before {
+[class^="_icon-prev"]:before {
   content: "\e90d";
 }
 
-.icon-loop:before {
+[class^="_icon-loop"]:before {
   content: "\e90e";
 }
 
-.icon-sequence:before {
+[class^="_icon-sequence"]:before {
   content: "\e90f";
 }
 
-.icon-random:before {
+[class^="_icon-random"]:before {
   content: "\e910";
 }
 
@@ -102,14 +102,14 @@
   content: "\e912";
 }
 
-.icon-next:before {
+[class^="_icon-next"]:before {
   content: "\e913";
 }
 
-.icon-dismiss:before {
+[class^="_icon-dismiss"]:before {
   content: "\e914";
 }
 
-.icon-pause-mini:before {
+[class^="_icon-pause-mini"]:before {
   content: "\e915";
 }
