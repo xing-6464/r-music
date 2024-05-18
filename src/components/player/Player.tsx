@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { useAppSelector } from '@/store/hooks'
 import {
   currentSong as getCurrentSong,
@@ -12,6 +12,8 @@ import classNames from 'classnames'
 
 function Player() {
   const audioRef = useRef<HTMLAudioElement>(null)
+  const [songReady, setSongReady] = useState(false)
+
   const dispatch = useAppDispatch()
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
   const currentSong = useAppSelector(getCurrentSong)
@@ -22,28 +24,36 @@ function Player() {
   const playIcon = useMemo(() => {
     return playing ? '_icon-pause' : '_icon-play'
   }, [playing])
+  const disabledCls = useMemo(() => {
+    return songReady ? '' : styles.disable
+  }, [songReady])
 
   useEffect(() => {
     if (!currentSong.id || !currentSong.url) return
     if (!audioRef.current) return
+
+    setSongReady(false)
     audioRef.current.src = currentSong.url
     audioRef.current.play()
   }, [currentSong])
 
   useEffect(() => {
+    if (!songReady) return
     if (!audioRef.current) return
     playing ? audioRef.current.play() : audioRef.current.pause()
-  }, [playing])
+  }, [playing, songReady])
 
   function goBack() {
     dispatch(setFullScreen(false))
   }
 
   function togglePlay() {
+    if (!songReady) return
     dispatch(setPlayingState(!playing))
   }
 
   function loop() {
+    if (!audioRef.current) return
     audioRef.current.currentTime = 0
     audioRef.current.play()
   }
@@ -53,7 +63,7 @@ function Player() {
   }
 
   function prev() {
-    if (!playList.length) return
+    if (!songReady || !playList.length) return
     if (playList.length === 1) {
       loop()
     } else {
@@ -68,7 +78,7 @@ function Player() {
   }
 
   function next() {
-    if (!playList.length) return
+    if (!songReady || !playList.length) return
     if (playList.length === 1) {
       loop()
     } else {
@@ -80,6 +90,15 @@ function Player() {
         dispatch(setPlayingState(true))
       }
     }
+  }
+
+  function ready() {
+    if (songReady) return
+    setSongReady(true)
+  }
+
+  function error() {
+    setSongReady(true)
   }
 
   return (
@@ -101,13 +120,31 @@ function Player() {
               <div className={classNames(styles.icon, styles['i-left'])}>
                 <i className="_icon-sequence"></i>
               </div>
-              <div className={classNames(styles.icon, styles['i-left'])}>
+              <div
+                className={classNames(
+                  styles.icon,
+                  styles['i-left'],
+                  disabledCls,
+                )}
+              >
                 <i className="_icon-prev" onClick={prev}></i>
               </div>
-              <div className={classNames(styles.icon, styles['i-center'])}>
+              <div
+                className={classNames(
+                  styles.icon,
+                  styles['i-center'],
+                  disabledCls,
+                )}
+              >
                 <i className={playIcon} onClick={togglePlay}></i>
               </div>
-              <div className={classNames(styles.icon, styles['i-right'])}>
+              <div
+                className={classNames(
+                  styles.icon,
+                  styles['i-right'],
+                  disabledCls,
+                )}
+              >
                 <i className="_icon-next" onClick={next}></i>
               </div>
               <div className={classNames(styles.icon, styles['i-right'])}>
@@ -117,7 +154,12 @@ function Player() {
           </div>
         </div>
       )}
-      <audio ref={audioRef} onPause={pause}></audio>
+      <audio
+        ref={audioRef}
+        onPause={pause}
+        onCanPlay={ready}
+        onError={error}
+      ></audio>
     </div>
   )
 }
