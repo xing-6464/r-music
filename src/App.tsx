@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 import Header from './components/header/Header'
 import Tab from './components/tab/Tab'
+import Player from './components/player/Player'
 
 function App() {
   const nav = useNavigate()
@@ -17,6 +18,7 @@ function App() {
       <Header />
       <Tab />
       <Outlet />
+      <Player />
     </>
   )
 }

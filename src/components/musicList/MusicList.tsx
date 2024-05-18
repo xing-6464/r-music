@@ -36,6 +36,7 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
       display,
     }
   }, [scrollY, maxTranslateY])
+
   const bgImageStyle = useMemo<CSSProperties>(() => {
     let zIndex = 0
     let paddingTop: string | number = '70%'

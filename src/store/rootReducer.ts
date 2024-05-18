@@ -67,7 +67,7 @@ const playSlice = createSlice({
 
 // 获取当前播放歌曲
 export const currentSong = (state: RootState) =>
-  state.root.playList[state.root.currentIndex]
+  state.root.playList[state.root.currentIndex] || {}
 
 export const {
   setPlayingState,
