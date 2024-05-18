@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { PLAY_MODE } from '../assets/ts/constant'
 import { RootState } from '.'
+import { shuffle } from '../assets/ts/util'
 
 type PlayState = {
   sequenceList: any[]
@@ -53,6 +54,14 @@ const playSlice = createSlice({
       state.playList = action.payload.list
       state.currentIndex = action.payload.index
     },
+    randomPlay(state: PlayState, action: PayloadAction<any[]>) {
+      state.playMode = PLAY_MODE.random
+      state.sequenceList = action.payload
+      state.playing = true
+      state.fullScreen = true
+      state.playList = shuffle(action.payload)
+      state.currentIndex = 0
+    },
   },
 })
 
@@ -68,5 +77,6 @@ export const {
   setCurrentIndex,
   setFullScreen,
   selectPlay,
+  randomPlay,
 } = playSlice.actions
 export default playSlice.reducer

@@ -7,7 +7,7 @@ import SongList from '../base/songList/SongList'
 import { useNavigate } from 'react-router'
 import Loading from '../base/loading/Loading'
 import { useAppDispatch } from '@/store/hooks'
-import { selectPlay } from '@/store/rootReducer'
+import { randomPlay, selectPlay } from '@/store/rootReducer'
 
 interface MusicListProps {
   songs: Songs
@@ -27,6 +27,15 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
 
   const nav = useNavigate()
 
+  const playBtnStyle = useMemo<CSSProperties>(() => {
+    let display = ''
+    if (scrollY >= maxTranslateY) {
+      display = 'none'
+    }
+    return {
+      display,
+    }
+  }, [scrollY, maxTranslateY])
   const bgImageStyle = useMemo<CSSProperties>(() => {
     let zIndex = 0
     let paddingTop: string | number = '70%'
@@ -90,6 +99,10 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
     dispatch(selectPlay({ list: songs, index: index }))
   }
 
+  function random() {
+    dispatch(randomPlay(songs))
+  }
+
   return (
     <div className={styles['music-list']}>
       <div className={styles['back']} onClick={goBack}>
@@ -97,12 +110,14 @@ function MusicList({ songs, title, pic, loading }: MusicListProps) {
       </div>
       <h1 className={styles['title']}>{title}</h1>
       <div ref={imageRef} className={styles['bg-image']} style={bgImageStyle}>
-        {/* <div className={styles['play-btn-wrapper']}>
-          <div className={styles['play-btn']}>
-            <i className={styles['icon-play']}></i>
-            <span className={styles['text']}>随机播放全部</span>
-          </div>
-        </div> */}
+        <div className={styles['play-btn-wrapper']} style={playBtnStyle}>
+          {songs.length > 0 && (
+            <div className={styles['play-btn']} onClick={random}>
+              <i className={styles['icon-play']}></i>
+              <span className={styles['text']}>随机播放全部</span>
+            </div>
+          )}
+        </div>
         <div className={styles['filter']} style={filterStyle}></div>
       </div>
       {!loading ? (
