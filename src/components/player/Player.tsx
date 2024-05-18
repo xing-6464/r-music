@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo } from 'react'
 import { useAppSelector } from '@/store/hooks'
 import {
   currentSong as getCurrentSong,
+  setCurrentIndex,
   setFullScreen,
   setPlayingState,
 } from '@/store/rootReducer'
@@ -15,6 +16,8 @@ function Player() {
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
   const currentSong = useAppSelector(getCurrentSong)
   const playing = useAppSelector((state) => state.root.playing)
+  const currentIndex = useAppSelector((state) => state.root.currentIndex)
+  const playList = useAppSelector((state) => state.root.playList)
 
   const playIcon = useMemo(() => {
     return playing ? '_icon-pause' : '_icon-play'
@@ -40,8 +43,43 @@ function Player() {
     dispatch(setPlayingState(!playing))
   }
 
+  function loop() {
+    audioRef.current.currentTime = 0
+    audioRef.current.play()
+  }
+
   function pause() {
     dispatch(setPlayingState(false))
+  }
+
+  function prev() {
+    if (!playList.length) return
+    if (playList.length === 1) {
+      loop()
+    } else {
+      let index = currentIndex - 1
+      if (index === -1) index = playList.length - 1
+
+      dispatch(setCurrentIndex(index))
+      if (!playing) {
+        dispatch(setPlayingState(true))
+      }
+    }
+  }
+
+  function next() {
+    if (!playList.length) return
+    if (playList.length === 1) {
+      loop()
+    } else {
+      let index = currentIndex + 1
+      if (index === playList.length) index = 0
+
+      dispatch(setCurrentIndex(index))
+      if (!playing) {
+        dispatch(setPlayingState(true))
+      }
+    }
   }
 
   return (
@@ -64,16 +102,13 @@ function Player() {
                 <i className="_icon-sequence"></i>
               </div>
               <div className={classNames(styles.icon, styles['i-left'])}>
-                <i className="_icon-prev"></i>
+                <i className="_icon-prev" onClick={prev}></i>
               </div>
-              <div
-                className={classNames(styles.icon, styles['i-center'])}
-                onClick={togglePlay}
-              >
-                <i className={playIcon}></i>
+              <div className={classNames(styles.icon, styles['i-center'])}>
+                <i className={playIcon} onClick={togglePlay}></i>
               </div>
               <div className={classNames(styles.icon, styles['i-right'])}>
-                <i className="_icon-next"></i>
+                <i className="_icon-next" onClick={next}></i>
               </div>
               <div className={classNames(styles.icon, styles['i-right'])}>
                 <i className="_icon-not-favorite"></i>
