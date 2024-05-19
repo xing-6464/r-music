@@ -15,12 +15,14 @@ import useFavorite from './useFavorite'
 
 import ProgressBar from './ProgressBar'
 import { formatTime } from '../../assets/ts/util'
+import { PLAY_MODE } from '@/assets/ts/constant'
 
 function Player() {
   // state
   const audioRef = useRef<HTMLAudioElement>(null)
   const [songReady, setSongReady] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
+  const [progressChanging, setProgressChanging] = useState(false)
 
   // redux
   const dispatch = useAppDispatch()
@@ -29,6 +31,7 @@ function Player() {
   const playing = useAppSelector((state) => state.root.playing)
   const currentIndex = useAppSelector((state) => state.root.currentIndex)
   const playList = useAppSelector((state) => state.root.playList)
+  const playMode = useAppSelector((state) => state.root.playMode)
 
   // 修改播放模式 hooks
   const { modeIcon, changeMode } = useMode()
@@ -74,6 +77,7 @@ function Player() {
     if (!audioRef.current) return
     audioRef.current.currentTime = 0
     audioRef.current.play()
+    dispatch(setPlayingState(true))
   }
 
   function pause() {
@@ -119,8 +123,33 @@ function Player() {
     setSongReady(true)
   }
 
+  function end() {
+    setCurrentTime(0)
+    if (playMode === PLAY_MODE.loop) {
+      loop()
+    } else {
+      next()
+    }
+  }
+
   function updateTime(e: SyntheticEvent<HTMLAudioElement, Event>) {
+    if (progressChanging) return
     setCurrentTime(e.currentTarget.currentTime)
+  }
+
+  function onProgressChanging(progress: number) {
+    setProgressChanging(true)
+    setCurrentTime(currentSong.duration * progress)
+  }
+
+  function onProgressChanged(progress: number) {
+    audioRef.current!.currentTime = currentSong.duration * progress
+    setCurrentTime(currentSong.duration * progress)
+
+    // 播放
+    if (!playing) {
+      dispatch(setPlayingState(true))
+    }
   }
 
   return (
@@ -143,7 +172,11 @@ function Player() {
                 {formatTime(currentTime)}
               </span>
               <div className={styles['progress-bar-wrapper']}>
-                <ProgressBar progress={progress} />
+                <ProgressBar
+                  progress={progress}
+                  onProgressChanged={onProgressChanged}
+                  onProgressChanging={onProgressChanging}
+                />
               </div>
               <span className={classNames(styles.time, styles['time-r'])}>
                 {formatTime(currentSong.duration)}
@@ -196,6 +229,7 @@ function Player() {
         onCanPlay={ready}
         onError={error}
         onTimeUpdate={(e) => updateTime(e)}
+        onEnded={end}
       />
     </div>
   )
