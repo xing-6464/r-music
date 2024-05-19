@@ -27,6 +27,10 @@ body, html {
   height: 0 !important;
 }
 
+.playing {
+  animation: rotate 20s linear infinite
+}
+
 @keyframes rotate {
   0% {
     transform: rotate(0)

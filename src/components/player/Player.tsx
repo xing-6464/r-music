@@ -16,6 +16,7 @@ import useFavorite from './useFavorite'
 import ProgressBar from './ProgressBar'
 import { formatTime } from '../../assets/ts/util'
 import { PLAY_MODE } from '@/assets/ts/constant'
+import useCd from './useCd'
 
 function Player() {
   // state
@@ -36,6 +37,7 @@ function Player() {
   // 修改播放模式 hooks
   const { modeIcon, changeMode } = useMode()
   const { toggleFavorite, getFavoriteIcon } = useFavorite()
+  const { cdCls, cdRef, cdImageRef } = useCd()
 
   // computed
   const playIcon = useMemo(() => {
@@ -165,6 +167,19 @@ function Player() {
             </div>
             <h1 className={styles.title}>{currentSong.name}</h1>
             <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
+          </div>
+          <div className={styles.middle}>
+            <div className={styles['middle-l']}>
+              <div className={styles['cd-wrapper']}>
+                <div className={styles.cd} ref={cdRef}>
+                  <img
+                    ref={cdImageRef}
+                    src={currentSong.pic}
+                    className={classNames('image', cdCls)}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <div className={styles.bottom}>
             <div className={styles['progress-wrapper']}>
