@@ -1,4 +1,5 @@
-import { useEffect, useRef, useMemo, useState } from 'react'
+import { useEffect, useRef, useMemo, useState, SyntheticEvent } from 'react'
+
 import { useAppSelector } from '@/store/hooks'
 import {
   currentSong as getCurrentSong,
@@ -12,10 +13,14 @@ import classNames from 'classnames'
 import useMode from './useMode'
 import useFavorite from './useFavorite'
 
+import ProgressBar from './ProgressBar'
+import { formatTime } from '../../assets/ts/util'
+
 function Player() {
   // state
   const audioRef = useRef<HTMLAudioElement>(null)
   const [songReady, setSongReady] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
 
   // redux
   const dispatch = useAppDispatch()
@@ -36,12 +41,16 @@ function Player() {
   const disabledCls = useMemo(() => {
     return songReady ? '' : styles.disable
   }, [songReady])
+  const progress = useMemo(() => {
+    return currentTime / currentSong.duration
+  }, [currentTime, currentSong])
 
   // useEffect
   useEffect(() => {
     if (!currentSong.id || !currentSong.url) return
     if (!audioRef.current) return
 
+    setCurrentTime(0)
     setSongReady(false)
     audioRef.current.src = currentSong.url
     audioRef.current.play()
@@ -110,6 +119,10 @@ function Player() {
     setSongReady(true)
   }
 
+  function updateTime(e: SyntheticEvent<HTMLAudioElement, Event>) {
+    setCurrentTime(e.currentTarget.currentTime)
+  }
+
   return (
     <div className={styles.player}>
       {fullScreen && (
@@ -125,6 +138,17 @@ function Player() {
             <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
           </div>
           <div className={styles.bottom}>
+            <div className={styles['progress-wrapper']}>
+              <span className={classNames(styles.time, styles['time-l'])}>
+                {formatTime(currentTime)}
+              </span>
+              <div className={styles['progress-bar-wrapper']}>
+                <ProgressBar progress={progress} />
+              </div>
+              <span className={classNames(styles.time, styles['time-r'])}>
+                {formatTime(currentSong.duration)}
+              </span>
+            </div>
             <div className={styles.operators}>
               <div className={classNames(styles.icon, styles['i-left'])}>
                 <i className={modeIcon} onClick={changeMode}></i>
@@ -171,7 +195,8 @@ function Player() {
         onPause={pause}
         onCanPlay={ready}
         onError={error}
-      ></audio>
+        onTimeUpdate={(e) => updateTime(e)}
+      />
     </div>
   )
 }
