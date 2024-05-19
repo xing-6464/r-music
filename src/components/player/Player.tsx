@@ -17,6 +17,7 @@ import ProgressBar from './ProgressBar'
 import { formatTime } from '../../assets/ts/util'
 import { PLAY_MODE } from '@/assets/ts/constant'
 import useCd from './useCd'
+import useLyric from './useLyric'
 
 function Player() {
   // state
@@ -38,6 +39,7 @@ function Player() {
   const { modeIcon, changeMode } = useMode()
   const { toggleFavorite, getFavoriteIcon } = useFavorite()
   const { cdCls, cdRef, cdImageRef } = useCd()
+  useLyric()
 
   // computed
   const playIcon = useMemo(() => {

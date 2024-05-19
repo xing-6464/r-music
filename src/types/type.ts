@@ -32,6 +32,7 @@ export interface Song {
   pic: string
   singer: string
   url: string
+  lyric?: string
 }
 
 export type Songs = Song[]

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { FAVORITE_KEY, PLAY_MODE } from '../assets/ts/constant'
 import { RootState } from '.'
 import { shuffle } from '../assets/ts/util'
-import type { Songs } from '@/types/type'
+import type { Song, Songs } from '@/types/type'
 import { load } from '@/assets/ts/array-store'
 
 type PlayState = {
@@ -82,6 +82,18 @@ const playSlice = createSlice({
       state.currentIndex = index
       state.playMode = mode
     },
+    addSongLyric(
+      state: PlayState,
+      action: PayloadAction<{ song: Song; lyric: string }>,
+    ) {
+      const { song, lyric } = action.payload
+      state.sequenceList.map((item) => {
+        if (item.mid === song.mid) {
+          item.lyric = lyric
+        }
+        return item
+      })
+    },
   },
 })
 
@@ -100,5 +112,6 @@ export const {
   randomPlay,
   changeMode,
   setFavoriteList,
+  addSongLyric,
 } = playSlice.actions
 export default playSlice.reducer

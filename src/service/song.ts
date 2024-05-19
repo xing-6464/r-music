@@ -1,4 +1,4 @@
-import { Songs } from '@/types/type'
+import { Song, Songs } from '@/types/type'
 import { get } from './base'
 
 export function processSongs(songs: Songs) {
@@ -12,5 +12,22 @@ export function processSongs(songs: Songs) {
         return song
       })
       .filter((song) => song.url.indexOf('vkey') > -1)
+  })
+}
+
+const lyricMap = new Map<string, string>()
+export function getLyric(song: Song) {
+  if (song.lyric) return Promise.resolve(song.lyric)
+
+  const lyric = lyricMap.get(song.mid)
+  if (lyric) return Promise.resolve(lyric)
+
+  const mid = song.mid
+  return get('/api/getLyric', {
+    mid,
+  }).then((res) => {
+    const lyric = res ? res.lyric : '[00:00:00]该歌曲暂时无法获取歌词暂无歌词'
+    lyricMap.set(mid, lyric)
+    return lyric
   })
 }
