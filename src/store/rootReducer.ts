@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { PLAY_MODE } from '../assets/ts/constant'
+import { FAVORITE_KEY, PLAY_MODE } from '../assets/ts/constant'
 import { RootState } from '.'
 import { shuffle } from '../assets/ts/util'
 import type { Songs } from '@/types/type'
+import { load } from '@/assets/ts/array-store'
 
 type PlayState = {
   sequenceList: Songs
@@ -21,7 +22,7 @@ const initialState: PlayState = {
   playMode: PLAY_MODE.sequence,
   currentIndex: -1,
   fullScreen: false,
-  favoriteList: [],
+  favoriteList: load(FAVORITE_KEY),
 }
 
 const playSlice = createSlice({

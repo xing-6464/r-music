@@ -10,6 +10,7 @@ import styles from './Player.module.scss'
 import { useAppDispatch } from '../../store/hooks'
 import classNames from 'classnames'
 import useMode from './useMode'
+import useFavorite from './useFavorite'
 
 function Player() {
   // state
@@ -26,6 +27,7 @@ function Player() {
 
   // 修改播放模式 hooks
   const { modeIcon, changeMode } = useMode()
+  const { toggleFavorite, getFavoriteIcon } = useFavorite()
 
   // computed
   const playIcon = useMemo(() => {
@@ -155,7 +157,10 @@ function Player() {
                 <i className="_icon-next" onClick={next}></i>
               </div>
               <div className={classNames(styles.icon, styles['i-right'])}>
-                <i className="_icon-not-favorite"></i>
+                <i
+                  className={getFavoriteIcon(currentSong)}
+                  onClick={() => toggleFavorite(currentSong)}
+                ></i>
               </div>
             </div>
           </div>
