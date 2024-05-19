@@ -19,10 +19,10 @@ const lyricMap = new Map<string, string>()
 export function getLyric(song: Song) {
   if (song.lyric) return Promise.resolve(song.lyric)
 
-  const lyric = lyricMap.get(song.mid)
+  const mid = song.mid
+  const lyric = lyricMap.get(mid)
   if (lyric) return Promise.resolve(lyric)
 
-  const mid = song.mid
   return get('/api/getLyric', {
     mid,
   }).then((res) => {

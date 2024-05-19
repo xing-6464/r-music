@@ -16,8 +16,9 @@ import useFavorite from './useFavorite'
 import ProgressBar from './ProgressBar'
 import { formatTime } from '../../assets/ts/util'
 import { PLAY_MODE } from '@/assets/ts/constant'
-import useCd from './useCd'
+// import useCd from './useCd'
 import useLyric from './useLyric'
+import Scroll from '../base/scroll/Scroll'
 
 function Player() {
   // state
@@ -38,8 +39,18 @@ function Player() {
   // 修改播放模式 hooks
   const { modeIcon, changeMode } = useMode()
   const { toggleFavorite, getFavoriteIcon } = useFavorite()
-  const { cdCls, cdRef, cdImageRef } = useCd()
-  useLyric()
+  // const { cdCls, cdRef, cdImageRef } = useCd()
+  const {
+    currentLyric,
+    currentLineNum,
+    playLyric,
+    lyricListRef,
+    lyricScrollRef,
+    stopLyric,
+  } = useLyric({
+    songReady,
+    currentTime,
+  })
 
   // computed
   const playIcon = useMemo(() => {
@@ -65,7 +76,13 @@ function Player() {
   useEffect(() => {
     if (!songReady) return
     if (!audioRef.current) return
-    playing ? audioRef.current.play() : audioRef.current.pause()
+    if (playing) {
+      audioRef.current.play()
+      playLyric()
+    } else {
+      audioRef.current.pause()
+      stopLyric()
+    }
   }, [playing, songReady])
 
   function goBack() {
@@ -120,6 +137,7 @@ function Player() {
 
   function ready() {
     if (songReady) return
+    playLyric()
     setSongReady(true)
   }
 
@@ -144,6 +162,8 @@ function Player() {
   function onProgressChanging(progress: number) {
     setProgressChanging(true)
     setCurrentTime(currentSong.duration * progress)
+    playLyric()
+    stopLyric()
   }
 
   function onProgressChanged(progress: number) {
@@ -154,6 +174,8 @@ function Player() {
     if (!playing) {
       dispatch(setPlayingState(true))
     }
+
+    playLyric()
   }
 
   return (
@@ -171,7 +193,7 @@ function Player() {
             <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
           </div>
           <div className={styles.middle}>
-            <div className={styles['middle-l']}>
+            {/* <div className={styles['middle-l']}>
               <div className={styles['cd-wrapper']}>
                 <div className={styles.cd} ref={cdRef}>
                   <img
@@ -181,7 +203,29 @@ function Player() {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
+            <Scroll cls={styles['middle-r']} ref={lyricScrollRef}>
+              <div className={styles['lyric-wrapper']}>
+                {currentLyric.current && (
+                  <div ref={lyricListRef}>
+                    {currentLyric.current.lines?.map(
+                      (line: any, index: number) => {
+                        return (
+                          <p
+                            key={line.time}
+                            className={classNames(styles.text, {
+                              [styles.current]: currentLineNum === index,
+                            })}
+                          >
+                            {line.txt}
+                          </p>
+                        )
+                      },
+                    )}
+                  </div>
+                )}
+              </div>
+            </Scroll>
           </div>
           <div className={styles.bottom}>
             <div className={styles['progress-wrapper']}>
