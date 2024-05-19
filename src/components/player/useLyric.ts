@@ -17,6 +17,9 @@ function useLyric({
   const currentLyric = useRef<any>(null)
   const lyricScrollRef = useRef<any>(null)
   const lyricListRef = useRef<HTMLDivElement>(null)
+
+  const [playingLyric, setPlayingLyric] = useState<string>('')
+  const [pureMusicLyric, setPureMusicLyric] = useState<string>('')
   const [currentLineNum, setCurrentLineNum] = useState<number>(0)
 
   const dispatch = useAppDispatch()
@@ -30,10 +33,16 @@ function useLyric({
 
       dispatch(addSongLyric({ song: currentSong, lyric }))
       if (currentSong.lyric && currentSong.lyric !== lyric) return
-      // setCurrentLyric(() => new Lyric(lyric, handleLyric))
       currentLyric.current = new Lyric(lyric, handleLyric)
-      if (songReady) {
-        playLyric()
+      const hasLyric = currentLyric.current.lines.length
+      if (hasLyric) {
+        if (songReady) {
+          playLyric()
+        }
+      } else {
+        const lyricText = lyric.replace(/\[(\d{2}):(\d{2}):(\d{2})\]/g, '')
+        setPlayingLyric(lyricText)
+        setPureMusicLyric(lyricText)
       }
     }
 
@@ -44,8 +53,10 @@ function useLyric({
       stopLyric()
       currentLyric.current = null
       setCurrentLineNum(() => 0)
+      setPureMusicLyric(() => '')
+      setPlayingLyric(() => '')
     }
-  }, [currentSong.url])
+  }, [currentSong.id])
 
   function playLyric() {
     if (!currentLyric.current) return
@@ -57,8 +68,9 @@ function useLyric({
     currentLyric.current.stop()
   }
 
-  function handleLyric({ lineNum }: { lineNum: number }) {
+  function handleLyric({ lineNum, txt }: { lineNum: number; txt: string }) {
     setCurrentLineNum(lineNum)
+    setPlayingLyric(txt)
     if (!lyricListRef.current || !lyricScrollRef.current) return
     if (lineNum > 5) {
       const lineEl = lyricListRef.current.children[lineNum - 5]
@@ -75,6 +87,8 @@ function useLyric({
     lyricScrollRef,
     lyricListRef,
     stopLyric,
+    pureMusicLyric,
+    playingLyric,
   }
 }
 

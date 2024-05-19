@@ -16,7 +16,7 @@ import useFavorite from './useFavorite'
 import ProgressBar from './ProgressBar'
 import { formatTime } from '../../assets/ts/util'
 import { PLAY_MODE } from '@/assets/ts/constant'
-// import useCd from './useCd'
+import useCd from './useCd'
 import useLyric from './useLyric'
 import Scroll from '../base/scroll/Scroll'
 
@@ -39,7 +39,7 @@ function Player() {
   // 修改播放模式 hooks
   const { modeIcon, changeMode } = useMode()
   const { toggleFavorite, getFavoriteIcon } = useFavorite()
-  // const { cdCls, cdRef, cdImageRef } = useCd()
+  const { cdCls, cdRef, cdImageRef } = useCd()
   const {
     currentLyric,
     currentLineNum,
@@ -47,6 +47,8 @@ function Player() {
     lyricListRef,
     lyricScrollRef,
     stopLyric,
+    pureMusicLyric,
+    playingLyric,
   } = useLyric({
     songReady,
     currentTime,
@@ -193,7 +195,7 @@ function Player() {
             <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
           </div>
           <div className={styles.middle}>
-            {/* <div className={styles['middle-l']}>
+            <div className={styles['middle-l']}>
               <div className={styles['cd-wrapper']}>
                 <div className={styles.cd} ref={cdRef}>
                   <img
@@ -203,7 +205,10 @@ function Player() {
                   />
                 </div>
               </div>
-            </div> */}
+              <div className={styles['playing-lyric-wrapper']}>
+                <div className={styles['playing-lyric']}>{playingLyric}</div>
+              </div>
+            </div>
             <Scroll cls={styles['middle-r']} ref={lyricScrollRef}>
               <div className={styles['lyric-wrapper']}>
                 {currentLyric.current && (
@@ -212,7 +217,7 @@ function Player() {
                       (line: any, index: number) => {
                         return (
                           <p
-                            key={line.time}
+                            key={index}
                             className={classNames(styles.text, {
                               [styles.current]: currentLineNum === index,
                             })}
@@ -222,6 +227,11 @@ function Player() {
                         )
                       },
                     )}
+                  </div>
+                )}
+                {pureMusicLyric && (
+                  <div className={styles['pure-music']}>
+                    <p>{pureMusicLyric}</p>
                   </div>
                 )}
               </div>
