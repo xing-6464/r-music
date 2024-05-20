@@ -1,7 +1,7 @@
 import { CSSProperties, useState } from 'react'
 
 let currentView: 'cd' | 'lyric' = 'cd'
-const touch = { startX: 0, percent: 0 }
+const touch = { startX: 0, startY: 0, percent: 0, directionLocked: '' }
 
 function useMiddleInteractive() {
   const [currentShow, setCurrentShow] = useState<'cd' | 'lyric'>('cd')
@@ -11,10 +11,22 @@ function useMiddleInteractive() {
 
   function onMiddleTouchStart(e: React.TouchEvent) {
     touch.startX = e.touches[0].pageX
+    touch.startY = e.touches[0].pageY
+    touch.directionLocked = ''
   }
 
   function onMiddleTouchMove(e: React.TouchEvent) {
     const deltaX = e.touches[0].pageX - touch.startX
+    const deltaY = e.touches[0].pageY - touch.startY
+
+    const absDeltaX = Math.abs(deltaX)
+    const absDeltaY = Math.abs(deltaY)
+
+    if (!touch.directionLocked) {
+      touch.directionLocked = absDeltaX >= absDeltaY ? 'h' : 'v'
+    }
+    if (touch.directionLocked === 'v') return
+
     const left = currentView === 'cd' ? 0 : -window.innerWidth
     const offsetWidth = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
     touch.percent = Math.abs(offsetWidth / window.innerWidth)
