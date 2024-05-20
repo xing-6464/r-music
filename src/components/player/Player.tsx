@@ -19,6 +19,7 @@ import { PLAY_MODE } from '@/assets/ts/constant'
 import useCd from './useCd'
 import useLyric from './useLyric'
 import Scroll from '../base/scroll/Scroll'
+import useMiddleInteractive from './useMiddleInteractive'
 
 function Player() {
   // state
@@ -40,6 +41,14 @@ function Player() {
   const { modeIcon, changeMode } = useMode()
   const { toggleFavorite, getFavoriteIcon } = useFavorite()
   const { cdCls, cdRef, cdImageRef } = useCd()
+  const {
+    middleLStyle,
+    middleRStyle,
+    currentShow,
+    onMiddleTouchStart,
+    onMiddleTouchMove,
+    onMiddleTouchEnd,
+  } = useMiddleInteractive()
   const {
     currentLyric,
     currentLineNum,
@@ -194,8 +203,13 @@ function Player() {
             <h1 className={styles.title}>{currentSong.name}</h1>
             <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
           </div>
-          <div className={styles.middle}>
-            <div className={styles['middle-l']}>
+          <div
+            className={styles.middle}
+            onTouchStart={(e) => onMiddleTouchStart(e)}
+            onTouchMove={(e) => onMiddleTouchMove(e)}
+            onTouchEnd={onMiddleTouchEnd}
+          >
+            <div className={styles['middle-l']} style={middleLStyle}>
               <div className={styles['cd-wrapper']}>
                 <div className={styles.cd} ref={cdRef}>
                   <img
@@ -209,7 +223,11 @@ function Player() {
                 <div className={styles['playing-lyric']}>{playingLyric}</div>
               </div>
             </div>
-            <Scroll cls={styles['middle-r']} ref={lyricScrollRef}>
+            <Scroll
+              cls={styles['middle-r']}
+              ref={lyricScrollRef}
+              styles={middleRStyle}
+            >
               <div className={styles['lyric-wrapper']}>
                 {currentLyric.current && (
                   <div ref={lyricListRef}>
@@ -238,6 +256,18 @@ function Player() {
             </Scroll>
           </div>
           <div className={styles.bottom}>
+            <div className={styles['dot-wrapper']}>
+              <span
+                className={classNames(styles.dot, {
+                  [styles.active]: currentShow === 'cd',
+                })}
+              ></span>
+              <span
+                className={classNames(styles.dot, {
+                  [styles.active]: currentShow === 'lyric',
+                })}
+              ></span>
+            </div>
             <div className={styles['progress-wrapper']}>
               <span className={classNames(styles.time, styles['time-l'])}>
                 {formatTime(currentTime)}
