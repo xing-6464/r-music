@@ -37,8 +37,8 @@ function ProgressCircle(props: Props) {
           cx="50"
           cy="50"
           fill="transparent"
-          stroke-dasharray={dashArray}
-          stroke-dashoffset={dashOffset}
+          strokeDasharray={dashArray}
+          strokeDashoffset={dashOffset}
         />
       </svg>
       {children}

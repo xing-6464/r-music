@@ -25,6 +25,7 @@ import MiniPlayer from './MiniPlayer'
 function Player() {
   // state
   const audioRef = useRef<HTMLAudioElement>(null)
+  const barRef = useRef<any>(null)
   const [songReady, setSongReady] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [progressChanging, setProgressChanging] = useState(false)
@@ -96,6 +97,12 @@ function Player() {
       stopLyric()
     }
   }, [playing, songReady])
+  useEffect(() => {
+    if (!barRef.current) return
+    if (fullScreen) {
+      barRef.current!.setOffsetSet?.(progress)
+    }
+  }, [fullScreen])
 
   function goBack() {
     dispatch(setFullScreen(false))
@@ -280,6 +287,7 @@ function Player() {
             </span>
             <div className={styles['progress-bar-wrapper']}>
               <ProgressBar
+                ref={barRef}
                 progress={progress}
                 onProgressChanged={onProgressChanged}
                 onProgressChanging={onProgressChanging}

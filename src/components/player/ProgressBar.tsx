@@ -1,4 +1,12 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  CSSProperties,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from 'react'
 import styles from './ProgressBar.module.scss'
 
 type Props = {
@@ -9,7 +17,7 @@ type Props = {
 
 const progressBtnWidth = 16
 
-function ProgressBar(props: Props) {
+const ProgressBar = forwardRef(function (props: Props, ref: any) {
   const { progress, onProgressChanged, onProgressChanging } = props
 
   const progressRef = useRef<HTMLDivElement>(null)
@@ -33,9 +41,14 @@ function ProgressBar(props: Props) {
 
   useEffect(() => {
     if (!progressBarRef.current) return
-    const barWidth = progressBarRef.current.clientWidth - progressBtnWidth
-    setOffset(barWidth * progress)
+    setOffsetSet(progress)
   }, [progress])
+
+  useImperativeHandle(ref, () => {
+    return {
+      setOffsetSet,
+    }
+  })
 
   function onTouchStart(e: React.TouchEvent) {
     setTouch({
@@ -70,6 +83,11 @@ function ProgressBar(props: Props) {
     onProgressChanged?.(progress)
   }
 
+  function setOffsetSet(progress: number) {
+    const barWidth = progressBarRef.current!.clientWidth - progressBtnWidth
+    setOffset(barWidth * progress)
+  }
+
   return (
     <div
       className={styles['progress-bar']}
@@ -94,6 +112,6 @@ function ProgressBar(props: Props) {
       </div>
     </div>
   )
-}
+})
 
 export default ProgressBar
