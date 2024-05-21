@@ -9,6 +9,7 @@ import { Transition, TransitionStatus } from 'react-transition-group'
 import useCd from './useCd'
 import ProgressCircle from './ProgressCircle'
 import classNames from 'classnames'
+import useMiddleSlider from './useMiddleSlider'
 
 function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const duration = 600
@@ -18,8 +19,10 @@ function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const currentSong = useAppSelector(getCurrentSong)
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
   const playing = useAppSelector((state) => state.root.playing)
+  const playList = useAppSelector((state) => state.root.playList)
 
   const { cdCls, cdImageRef, cdRef } = useCd()
+  const { sliderWrapperRef } = useMiddleSlider()
 
   const miniPlayIcon = useMemo(() => {
     return playing ? 'icon-pause-mini' : 'icon-play-mini'
@@ -65,9 +68,15 @@ function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
               />
             </div>
           </div>
-          <div className={styles['slider-wrapper']}>
-            <h2 className={styles.name}>{currentSong.name}</h2>
-            <p className={styles.desc}>{currentSong.singer}</p>
+          <div className={styles['slider-wrapper']} ref={sliderWrapperRef}>
+            <div className={styles['slider-group']}>
+              {playList.map((song) => (
+                <div className={styles['slider-page']} key={song.id}>
+                  <h2 className={styles.name}>{song.name}</h2>
+                  <p className={styles.desc}>{song.singer}</p>
+                </div>
+              ))}
+            </div>
           </div>
           <div className={styles.control}>
             <ProgressCircle radius={32} progress={props.progress}>
