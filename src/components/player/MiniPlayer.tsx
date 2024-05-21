@@ -1,23 +1,29 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import {
   currentSong as getCurrentSong,
   setFullScreen,
 } from '../../store/rootReducer'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import styles from './MiniPlayer.module.scss'
-import { Transition } from 'react-transition-group'
-// import classNames from 'classnames'
+import { Transition, TransitionStatus } from 'react-transition-group'
 import useCd from './useCd'
+import ProgressCircle from './ProgressCircle'
+import classNames from 'classnames'
 
-function MiniPlayer() {
+function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const duration = 600
 
   const nodeRef = useRef(null)
   const dispatch = useAppDispatch()
   const currentSong = useAppSelector(getCurrentSong)
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
+  const playing = useAppSelector((state) => state.root.playing)
 
   const { cdCls, cdImageRef, cdRef } = useCd()
+
+  const miniPlayIcon = useMemo(() => {
+    return playing ? 'icon-pause-mini' : 'icon-play-mini'
+  }, [playing])
 
   const defaultStyle = {
     transition: `all ${duration}ms cubic-bezier(0.45, 0, 0.55, 1)`,
@@ -25,10 +31,11 @@ function MiniPlayer() {
     opacity: 1,
   }
 
-  const transitionStyles = {
-    entering: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
-    exited: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
-  }
+  const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } =
+    {
+      entering: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
+      exited: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
+    }
 
   function showNormalPlayer() {
     dispatch(setFullScreen(true))
@@ -58,9 +65,20 @@ function MiniPlayer() {
               />
             </div>
           </div>
-          <div>
+          <div className={styles['slider-wrapper']}>
             <h2 className={styles.name}>{currentSong.name}</h2>
             <p className={styles.desc}>{currentSong.singer}</p>
+          </div>
+          <div className={styles.control}>
+            <ProgressCircle radius={32} progress={props.progress}>
+              <i
+                className={classNames(styles['icon-mini'], miniPlayIcon)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  props.togglePlay()
+                }}
+              ></i>
+            </ProgressCircle>
           </div>
         </div>
       )}

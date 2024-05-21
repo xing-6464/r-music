@@ -325,7 +325,7 @@ function Player() {
           </div>
         </div>
       </div>
-      <MiniPlayer />
+      <MiniPlayer progress={progress} togglePlay={togglePlay} />
       <audio
         ref={audioRef}
         onPause={pause}
