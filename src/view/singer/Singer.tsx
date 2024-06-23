@@ -49,6 +49,7 @@ function Singer() {
   }
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useSinger() {
   return useOutletContext<ContentType>()
 }

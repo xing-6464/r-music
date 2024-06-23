@@ -11,9 +11,18 @@ import ProgressCircle from './ProgressCircle'
 import classNames from 'classnames'
 import useMiddleSlider from './useMiddleSlider'
 
-function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
-  const duration = 600
+const duration = 600
+const defaultStyle = {
+  transition: `all ${duration}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+  transform: 'translateY(0%)',
+  opacity: 1,
+}
 
+const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } = {
+  entering: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
+  exited: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
+}
+function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const nodeRef = useRef(null)
   const dispatch = useAppDispatch()
   const currentSong = useAppSelector(getCurrentSong)
@@ -27,18 +36,6 @@ function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const miniPlayIcon = useMemo(() => {
     return playing ? 'icon-pause-mini' : 'icon-play-mini'
   }, [playing])
-
-  const defaultStyle = {
-    transition: `all ${duration}ms cubic-bezier(0.45, 0, 0.55, 1)`,
-    transform: 'translateY(0%)',
-    opacity: 1,
-  }
-
-  const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } =
-    {
-      entering: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
-      exited: { transform: 'translate3d(0, 100%, 0)', opacity: 0 },
-    }
 
   function showNormalPlayer() {
     dispatch(setFullScreen(true))

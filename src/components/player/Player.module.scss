@@ -249,7 +249,7 @@
     }
 
     &.normal-enter-active,
-    &.normal-leave-active {
+    &.normal-exit-active {
       transition: all .6s;
 
       .top,
@@ -258,8 +258,8 @@
       }
     }
 
-    &.normal-enter-from,
-    &.normal-leave-to {
+    &.normal-enter,
+    &.normal-exit-done {
       opacity: 0;
 
       .top {

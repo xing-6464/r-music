@@ -21,9 +21,43 @@ import useMiddleInteractive from './useMiddleInteractive'
 import ProgressBar from './ProgressBar'
 import Scroll from '../base/scroll/Scroll'
 import MiniPlayer from './MiniPlayer'
+import { Transition, TransitionStatus } from 'react-transition-group'
+import useAnimation from './useAnimation'
+
+const duration = 600
+const defaultStyle: React.CSSProperties = {
+  transition: `all ${duration}ms`,
+  opacity: 1,
+}
+const topDefaultStyle: React.CSSProperties = {
+  transition: `all ${duration}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+  transform: 'translate3d(0, 0, 0)',
+}
+const topTransitionStyles: { [key in TransitionStatus]?: React.CSSProperties } =
+  {
+    entering: { transform: 'translate3d(0, -100px, 0)' },
+    exited: { transform: 'translate3d(0, -100px, 0)' },
+  }
+const buttonStyle: React.CSSProperties = {
+  transition: `all ${duration}ms cubic-bezier(0.45, 0, 0.55, 1)`,
+  transform: 'translate3d(0, 0, 0)',
+}
+const buttonTransitionStyles: {
+  [key in TransitionStatus]?: React.CSSProperties
+} = {
+  entering: { transform: 'translate3d(0, 150px, 0)' },
+  exited: { transform: 'translate3d(0, 150px, 0)' },
+}
+const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } = {
+  entering: { opacity: 1 },
+  entered: { opacity: 1 },
+  exited: { opacity: 0 },
+  exiting: { opacity: 0 },
+}
 
 function Player() {
   // state
+  const nodeRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement>(null)
   const barRef = useRef<any>(null)
   const [songReady, setSongReady] = useState(false)
@@ -64,6 +98,7 @@ function Player() {
     songReady,
     currentTime,
   })
+  const { cdWrapperRef, enter, afterEnter, leave, afterLeave } = useAnimation()
 
   // computed
   const playIcon = useMemo(() => {
@@ -202,137 +237,164 @@ function Player() {
       className={styles.player}
       style={{ display: playList.length ? '' : 'none' }}
     >
-      <div
-        className={styles['normal-player']}
-        style={{ display: fullScreen ? '' : 'none' }}
+      <Transition
+        nodeRef={nodeRef}
+        in={fullScreen}
+        timeout={duration}
+        onEnter={enter}
+        onEntered={afterEnter}
+        onExit={leave}
+        onExited={afterLeave}
       >
-        <div className={styles.background}>
-          <img src={currentSong.pic} />
-        </div>
-        <div className={styles.top}>
-          <div className={styles.back} onClick={goBack}>
-            <i className={styles['icon-back']}></i>
-          </div>
-          <h1 className={styles.title}>{currentSong.name}</h1>
-          <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
-        </div>
-        <div
-          className={styles.middle}
-          onTouchStart={(e) => onMiddleTouchStart(e)}
-          onTouchMove={(e) => onMiddleTouchMove(e)}
-          onTouchEnd={onMiddleTouchEnd}
-        >
-          <div className={styles['middle-l']} style={middleLStyle}>
-            <div className={styles['cd-wrapper']}>
-              <div className={styles.cd} ref={cdRef}>
-                <img
-                  ref={cdImageRef}
-                  src={currentSong.pic}
-                  className={classNames('image', styles[cdCls])}
-                />
-              </div>
-            </div>
-            <div className={styles['playing-lyric-wrapper']}>
-              <div className={styles['playing-lyric']}>{playingLyric}</div>
-            </div>
-          </div>
-          <Scroll
-            cls={styles['middle-r']}
-            ref={lyricScrollRef}
-            styles={middleRStyle}
+        {(state) => (
+          <div
+            ref={nodeRef}
+            className={styles['normal-player']}
+            style={{
+              display: fullScreen ? '' : 'none',
+              ...defaultStyle,
+              ...transitionStyles[state],
+            }}
           >
-            <div className={styles['lyric-wrapper']}>
-              {currentLyric.current && (
-                <div ref={lyricListRef}>
-                  {currentLyric.current.lines?.map(
-                    (line: any, index: number) => {
-                      return (
-                        <p
-                          key={index}
-                          className={classNames(styles.text, {
-                            [styles.current]: currentLineNum === index,
-                          })}
-                        >
-                          {line.txt}
-                        </p>
-                      )
-                    },
+            <div className={styles.background}>
+              <img src={currentSong.pic} />
+            </div>
+            <div
+              className={styles.top}
+              style={{ ...topDefaultStyle, ...topTransitionStyles[state] }}
+            >
+              <div className={styles.back} onClick={goBack}>
+                <i className={styles['icon-back']}></i>
+              </div>
+              <h1 className={styles.title}>{currentSong.name}</h1>
+              <h2 className={styles['subtitle']}>{currentSong.singer}</h2>
+            </div>
+            <div
+              className={styles.middle}
+              onTouchStart={(e) => onMiddleTouchStart(e)}
+              onTouchMove={(e) => onMiddleTouchMove(e)}
+              onTouchEnd={onMiddleTouchEnd}
+            >
+              <div className={styles['middle-l']} style={middleLStyle}>
+                <div className={styles['cd-wrapper']} ref={cdWrapperRef}>
+                  <div className={styles.cd} ref={cdRef}>
+                    <img
+                      ref={cdImageRef}
+                      src={currentSong.pic}
+                      className={classNames('image', styles[cdCls])}
+                    />
+                  </div>
+                </div>
+                <div className={styles['playing-lyric-wrapper']}>
+                  <div className={styles['playing-lyric']}>{playingLyric}</div>
+                </div>
+              </div>
+              <Scroll
+                cls={styles['middle-r']}
+                ref={lyricScrollRef}
+                styles={middleRStyle}
+              >
+                <div className={styles['lyric-wrapper']}>
+                  {currentLyric.current && (
+                    <div ref={lyricListRef}>
+                      {currentLyric.current.lines?.map(
+                        (line: any, index: number) => {
+                          return (
+                            <p
+                              key={index}
+                              className={classNames(styles.text, {
+                                [styles.current]: currentLineNum === index,
+                              })}
+                            >
+                              {line.txt}
+                            </p>
+                          )
+                        },
+                      )}
+                    </div>
+                  )}
+                  {pureMusicLyric && (
+                    <div className={styles['pure-music']}>
+                      <p>{pureMusicLyric}</p>
+                    </div>
                   )}
                 </div>
-              )}
-              {pureMusicLyric && (
-                <div className={styles['pure-music']}>
-                  <p>{pureMusicLyric}</p>
+              </Scroll>
+            </div>
+            <div
+              className={styles.bottom}
+              style={{ ...buttonStyle, ...buttonTransitionStyles[state] }}
+            >
+              <div className={styles['dot-wrapper']}>
+                <span
+                  className={classNames(styles.dot, {
+                    [styles.active]: currentShow === 'cd',
+                  })}
+                ></span>
+                <span
+                  className={classNames(styles.dot, {
+                    [styles.active]: currentShow === 'lyric',
+                  })}
+                ></span>
+              </div>
+              <div className={styles['progress-wrapper']}>
+                <span className={classNames(styles.time, styles['time-l'])}>
+                  {formatTime(currentTime)}
+                </span>
+                <div className={styles['progress-bar-wrapper']}>
+                  <ProgressBar
+                    ref={barRef}
+                    progress={progress}
+                    onProgressChanged={onProgressChanged}
+                    onProgressChanging={onProgressChanging}
+                  />
                 </div>
-              )}
-            </div>
-          </Scroll>
-        </div>
-        <div className={styles.bottom}>
-          <div className={styles['dot-wrapper']}>
-            <span
-              className={classNames(styles.dot, {
-                [styles.active]: currentShow === 'cd',
-              })}
-            ></span>
-            <span
-              className={classNames(styles.dot, {
-                [styles.active]: currentShow === 'lyric',
-              })}
-            ></span>
-          </div>
-          <div className={styles['progress-wrapper']}>
-            <span className={classNames(styles.time, styles['time-l'])}>
-              {formatTime(currentTime)}
-            </span>
-            <div className={styles['progress-bar-wrapper']}>
-              <ProgressBar
-                ref={barRef}
-                progress={progress}
-                onProgressChanged={onProgressChanged}
-                onProgressChanging={onProgressChanging}
-              />
-            </div>
-            <span className={classNames(styles.time, styles['time-r'])}>
-              {formatTime(currentSong.duration)}
-            </span>
-          </div>
-          <div className={styles.operators}>
-            <div className={classNames(styles.icon, styles['i-left'])}>
-              <i className={modeIcon} onClick={changeMode}></i>
-            </div>
-            <div
-              className={classNames(styles.icon, styles['i-left'], disabledCls)}
-            >
-              <i className="_icon-prev" onClick={prev}></i>
-            </div>
-            <div
-              className={classNames(
-                styles.icon,
-                styles['i-center'],
-                disabledCls,
-              )}
-            >
-              <i className={playIcon} onClick={togglePlay}></i>
-            </div>
-            <div
-              className={classNames(
-                styles.icon,
-                styles['i-right'],
-                disabledCls,
-              )}
-            >
-              <i className="_icon-next" onClick={next}></i>
-            </div>
-            <div className={classNames(styles.icon, styles['i-right'])}>
-              <i
-                className={getFavoriteIcon(currentSong)}
-                onClick={() => toggleFavorite(currentSong)}
-              ></i>
+                <span className={classNames(styles.time, styles['time-r'])}>
+                  {formatTime(currentSong.duration)}
+                </span>
+              </div>
+              <div className={styles.operators}>
+                <div className={classNames(styles.icon, styles['i-left'])}>
+                  <i className={modeIcon} onClick={changeMode}></i>
+                </div>
+                <div
+                  className={classNames(
+                    styles.icon,
+                    styles['i-left'],
+                    disabledCls,
+                  )}
+                >
+                  <i className="_icon-prev" onClick={prev}></i>
+                </div>
+                <div
+                  className={classNames(
+                    styles.icon,
+                    styles['i-center'],
+                    disabledCls,
+                  )}
+                >
+                  <i className={playIcon} onClick={togglePlay}></i>
+                </div>
+                <div
+                  className={classNames(
+                    styles.icon,
+                    styles['i-right'],
+                    disabledCls,
+                  )}
+                >
+                  <i className="_icon-next" onClick={next}></i>
+                </div>
+                <div className={classNames(styles.icon, styles['i-right'])}>
+                  <i
+                    className={getFavoriteIcon(currentSong)}
+                    onClick={() => toggleFavorite(currentSong)}
+                  ></i>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        )}
+      </Transition>
       <MiniPlayer progress={progress} togglePlay={togglePlay} />
       <audio
         ref={audioRef}
