@@ -3,8 +3,14 @@ import animations from 'create-keyframe-animation'
 
 export default function useAnimation() {
   const cdWrapperRef = useRef<any>(null)
+  let entering = false
+  let leaving = false
 
   function enter(isDone: boolean) {
+    if (leaving) {
+      afterLeave()
+    }
+    entering = true
     const { x, y, scale } = getPosAndScale()
 
     const animation = {
@@ -31,26 +37,45 @@ export default function useAnimation() {
   }
 
   function afterEnter() {
+    entering = false
     animations.unregisterAnimation('move')
     cdWrapperRef.current.animation = ''
   }
 
   function leave() {
+    if (entering) {
+      afterEnter()
+    }
+    leaving = true
     const { x, y, scale } = getPosAndScale()
 
-    cdWrapperRef.current.style.transition =
-      'all .6s cubic-bezier(0.45, 0, 0.55, 1)'
-    cdWrapperRef.current.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`
-    cdWrapperRef.current.addEventListener('transitionend', next)
-
-    function next() {
-      cdWrapperRef.current.removeEventListener('transitionend', next)
+    const animation = {
+      0: {
+        transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+      },
+      100: {
+        transform: 'translate3d(0, 0, 0) scale(1)',
+      },
     }
+
+    animations.registerAnimation({
+      name: 'moveLeave',
+      animation,
+      presets: {
+        duration: 600,
+        easing: 'cubic-bezier(0.45, 0, 0.55, 1)',
+      },
+    })
+
+    animations.runAnimation(cdWrapperRef.current, 'moveLeave', () => {
+      console.log('leave')
+    })
   }
 
   function afterLeave() {
-    cdWrapperRef.current.style.transition = ''
-    cdWrapperRef.current.style.transform = ''
+    leaving = false
+    animations.unregisterAnimation('moveLeave')
+    cdWrapperRef.current.animation = ''
   }
 
   function getPosAndScale() {

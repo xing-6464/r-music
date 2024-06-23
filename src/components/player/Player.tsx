@@ -241,6 +241,7 @@ function Player() {
         nodeRef={nodeRef}
         in={fullScreen}
         timeout={duration}
+        unmountOnExit
         onEnter={enter}
         onEntered={afterEnter}
         onExit={leave}
