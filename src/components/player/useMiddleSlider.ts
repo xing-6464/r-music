@@ -14,6 +14,7 @@ function useMiddleSlider() {
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
   const playList = useAppSelector((state) => state.root.playList)
   const currentIndex = useAppSelector((state) => state.root.currentIndex)
+  const playing = useAppSelector((state) => state.root.playing)
 
   const sliderShow = useMemo(() => {
     return !fullScreen && !!playList
@@ -41,7 +42,7 @@ function useMiddleSlider() {
           })
           slider.on('slidePageChanged', ({ pageX }: { pageX: number }) => {
             dispatch(setCurrentIndex(pageX))
-            dispatch(setPlayingState(true))
+            dispatch(setPlayingState(playing))
           })
           slider.goToPage?.(currentIndex, 0, 0)
           return slider

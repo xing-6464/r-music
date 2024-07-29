@@ -15,12 +15,20 @@ function useMode() {
         : '_icon-loop'
   }, [playMode])
 
+  const modeText = useMemo(() => {
+    return playMode === PLAY_MODE.sequence
+      ? '顺序播放'
+      : playMode === PLAY_MODE.random
+        ? '随机播放'
+        : '单曲循环'
+  }, [playMode])
+
   function changeMode() {
     const mode = (playMode + 1) % 3
     dispatch(changeModeAction(mode))
   }
 
-  return { modeIcon, changeMode }
+  return { modeIcon, modeText, changeMode }
 }
 
 export default useMode

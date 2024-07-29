@@ -6,7 +6,7 @@ export default function useAnimation() {
   let entering = false
   let leaving = false
 
-  function enter(isDone: boolean) {
+  function enter() {
     if (leaving) {
       afterLeave()
     }
@@ -31,9 +31,7 @@ export default function useAnimation() {
       },
     })
 
-    animations.runAnimation(cdWrapperRef.current, 'move', () => {
-      console.log(isDone)
-    })
+    animations.runAnimation(cdWrapperRef.current, 'move', () => {})
   }
 
   function afterEnter() {

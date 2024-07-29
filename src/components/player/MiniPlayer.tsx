@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   currentSong as getCurrentSong,
   setFullScreen,
@@ -10,6 +10,7 @@ import useCd from './useCd'
 import ProgressCircle from './ProgressCircle'
 import classNames from 'classnames'
 import useMiddleSlider from './useMiddleSlider'
+import PlayList from './PlayList'
 
 const duration = 600
 const defaultStyle = {
@@ -24,6 +25,7 @@ const transitionStyles: { [key in TransitionStatus]?: React.CSSProperties } = {
 }
 function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
   const nodeRef = useRef(null)
+  const [isOpen, setIsOpen] = useState(false)
   const dispatch = useAppDispatch()
   const currentSong = useAppSelector(getCurrentSong)
   const fullScreen = useAppSelector((state) => state.root.fullScreen)
@@ -39,6 +41,11 @@ function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
 
   function showNormalPlayer() {
     dispatch(setFullScreen(true))
+  }
+
+  function showPlayList(e: React.MouseEvent) {
+    e.stopPropagation()
+    setIsOpen(true)
   }
 
   return (
@@ -85,6 +92,9 @@ function MiniPlayer(props: { progress: number; togglePlay: () => void }) {
                 }}
               ></i>
             </ProgressCircle>
+          </div>
+          <div className={styles['control']} onClick={showPlayList}>
+            <i className={styles['icon-playlist']}></i>
           </div>
         </div>
       )}
