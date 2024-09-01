@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { getRecommend } from '@/service/recommend'
 import styles from './Recommend.module.scss'
 import Slider from '@/components/base/slider/Slider'
 import Scroll from '@/components/base/scroll/Scroll'
 import type { Albums, Sliders } from '../../types/type'
 import Loading from '@/components/base/loading/Loading'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
+import defaultPng from '../../assets/images/default.png'
+import 'react-lazy-load-image-component/src/effects/blur.css'
 
 function Recommend() {
   const [sliders, setSliders] = useState<Sliders>([])
@@ -21,6 +24,7 @@ function Recommend() {
 
     get()
   }, [])
+
   if (isLoading) {
     return <Loading />
   } else {
@@ -39,7 +43,15 @@ function Recommend() {
                 {albums.map((item) => (
                   <li className={styles['item']} key={item.id}>
                     <div className={styles['icon']}>
-                      <img src={item.pic} height="60" width="60" />
+                      <Suspense fallback={<img src={defaultPng} />}>
+                        <LazyLoadImage
+                          src={item.pic}
+                          height="60"
+                          width="60"
+                          effect="blur"
+                          placeholderSrc={defaultPng}
+                        />
+                      </Suspense>
                     </div>
                     <div className={styles['text']}>
                       <h2 className={styles['name']}>{item.username}</h2>

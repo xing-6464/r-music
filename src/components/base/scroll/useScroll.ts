@@ -16,17 +16,17 @@ export default function useScroll(
     const scrollCurrent = (scroll.current = new BScroll(wrapperRef.current!, {
       observeDOM: true,
       ...options,
-    }))
+    })) as BScroll
 
     if (options.probeType && options.probeType > 0) {
-      // eslint-disable-next-line no-extra-semi
-      ;(scrollCurrent as BScroll).on('scroll', (pos: any) => {
+      scrollCurrent.on('scroll', (pos: any) => {
         emit(pos)
       })
     }
 
     return () => {
-      scroll.current?.destroy()
+      scrollCurrent.destroy()
+      // scroll.current?.destroy()
     }
   }, [])
 

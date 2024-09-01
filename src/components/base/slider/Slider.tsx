@@ -4,18 +4,18 @@ import cls from 'classnames'
 import useSlider from './useSlider'
 
 import styles from './Slider.module.scss'
-import { Sliders } from '../../../types/type'
+import { type Sliders } from '../../../types/type'
 
 interface SliderProps {
   sliders: Sliders
 }
 
 const Slider: FC<SliderProps> = ({ sliders }) => {
-  const rootRef = useRef<null | HTMLElement>(null)
+  const rootRef = useRef<HTMLDivElement | null>(null)
   const { currentPageIndex } = useSlider(rootRef)
 
   return (
-    <div className={styles.slider} ref={rootRef as unknown as any}>
+    <div className={styles.slider} ref={rootRef}>
       <div className={styles['slider-group']}>
         {sliders.map((item) => {
           return (

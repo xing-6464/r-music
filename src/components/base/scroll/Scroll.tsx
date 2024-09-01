@@ -14,13 +14,15 @@ const Scroll = forwardRef<any, ScrollProps>(function Scroll(
   { children, click = true, cls, probeType = 0, styles, emit },
   ref,
 ) {
-  const rootRef = useRef<HTMLElement | null>(null)
+  const rootRef = useRef<HTMLDivElement | null>(null)
   const scroll = useScroll(rootRef, { click, probeType }, emit!)
+
   useImperativeHandle(ref, () => ({
     scroll,
   }))
+
   return (
-    <div ref={rootRef as any} className={cls} style={styles}>
+    <div ref={rootRef} className={cls} style={styles}>
       {children}
     </div>
   )

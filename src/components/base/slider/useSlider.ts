@@ -1,10 +1,4 @@
-import {
-  type MutableRefObject,
-  useEffect,
-  useRef,
-  useState,
-  SetStateAction,
-} from 'react'
+import { type MutableRefObject, useEffect, useRef, useState } from 'react'
 
 import BScroll from '@better-scroll/core'
 import Slide from '@better-scroll/slide'
@@ -31,15 +25,12 @@ export default function useSlider(
       },
     ))
 
-    sliderVal.on(
-      'slideWillChange',
-      (page: { pageX: SetStateAction<number> }) => {
-        setCurrentPageIndex(page.pageX)
-      },
-    )
+    sliderVal.on('slideWillChange', (page: { pageX: number }) => {
+      setCurrentPageIndex(page.pageX)
+    })
 
     return () => {
-      slider.current?.destroy()
+      sliderVal.destroy()
     }
   }, [])
 

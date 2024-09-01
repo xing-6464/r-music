@@ -1,4 +1,4 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
 
 import styles from './Tab.module.scss'
@@ -23,11 +23,11 @@ const tab = [
 ]
 
 const Tab = () => {
-  const [tabs] = useState(tab)
+  // const [tabs] = useState(tab)
 
   return (
     <div className={styles.tab}>
-      {tabs.map((item) => {
+      {tab.map((item) => {
         return (
           <NavLink
             to={item.path}
