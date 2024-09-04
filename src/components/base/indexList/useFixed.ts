@@ -3,13 +3,14 @@ import { Singers } from '../../../types/type'
 
 export default function useFixed(data: Singers) {
   const groupRef = useRef<HTMLUListElement | null>(null)
-  const [listHeight, setListHeight] = useState<number[]>([])
   const [scrollY, setScrollY] = useState<number>()
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [distance, setDistance] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0) // 当前选中的元素索引
+  const [distance, setDistance] = useState(0) // 距离顶部的距离
 
+  // li元素的高度
   const TITLE_HEIGHT = 30
 
+  // 当前选中的元素的标题
   const fixedTitle = useMemo(() => {
     if (scrollY && scrollY < 0) {
       return ''
@@ -26,37 +27,31 @@ export default function useFixed(data: Singers) {
     }
   }, [distance])
 
-  useEffect(() => {
-    calculate()
-  }, [data])
+  // 计算li元素的高度
+  const listHeights = useMemo(() => {
+    if (groupRef.current == null) return []
+    const list = groupRef.current?.children
+    const heights = [0]
+    let height = 0
+
+    for (let i = 0; i < list!.length; i++) {
+      height += list![i].clientHeight
+      heights.push(height)
+    }
+    return heights
+  }, [data, groupRef.current])
 
   useEffect(() => {
-    for (let i = 0; i < listHeight.length - 1; i++) {
-      const heightTop = listHeight[i]
-      const heightBottom = listHeight[i + 1]
+    if (listHeights.length === 0) return
+    for (let i = 0; i < listHeights.length - 1; i++) {
+      const heightTop = listHeights[i]
+      const heightBottom = listHeights[i + 1]
       if (scrollY && scrollY >= heightTop && scrollY <= heightBottom) {
         setCurrentIndex(i)
         setDistance(heightBottom - scrollY)
       }
     }
-  }, [scrollY, listHeight])
-
-  const calculate = () => {
-    const list = groupRef.current?.children
-    let height = 0
-
-    setListHeight(() => [])
-    set(height)
-
-    for (let i = 0; i < list!.length; i++) {
-      height += list![i].clientHeight
-      set(height)
-    }
-  }
-
-  function set(height: number) {
-    setListHeight((prev) => [...prev, height])
-  }
+  }, [scrollY])
 
   function onScroll(pos: any) {
     setScrollY(-pos.y)

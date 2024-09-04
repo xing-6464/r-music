@@ -4,7 +4,7 @@ import { Singer as S, Singers } from '../../types/type'
 
 import styles from './Singer.module.scss'
 import IndexList from '../../components/base/indexList/IndexList'
-import Loading from '../../components/base/loading/Loading'
+import Loading from '../../components/base/loading/Load'
 import { Outlet, useNavigate, useOutletContext } from 'react-router'
 import { SINGER_KEY } from '@/assets/ts/constant'
 import storage from 'good-storage'
@@ -15,6 +15,7 @@ function Singer() {
   const [singers, setSingers] = useState<Singers>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedSinger, setSelectedSinger] = useState<S>()
+  // const outlet = useOutlet({ singer: selectedSinger })
   const nav = useNavigate()
 
   useEffect(() => {

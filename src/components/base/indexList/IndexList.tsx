@@ -6,6 +6,7 @@ import styles from './IndexList.module.scss'
 import useFixed from './useFixed'
 import useShortCut from './useShortCut'
 import classNames from 'classnames'
+import { LazyLoadImage } from 'react-lazy-load-image-component'
 
 interface IndexListProps {
   data: Singers
@@ -47,7 +48,11 @@ const IndexList: FC<IndexListProps> = ({ data, select }) => {
                     className={styles['item']}
                     onClick={() => onItemClick(item)}
                   >
-                    <img className={styles['avatar']} src={item.pic} />
+                    <LazyLoadImage
+                      className={styles['avatar']}
+                      src={item.pic}
+                      effect="blur"
+                    />
                     <span className={styles['name']}>{item.name}</span>
                   </li>
                 ))}
@@ -55,13 +60,12 @@ const IndexList: FC<IndexListProps> = ({ data, select }) => {
             </li>
           ))}
         </ul>
-        {!fixedTitle ? (
-          <></>
-        ) : (
-          <div className={styles.fixed} style={fixedStyle}>
-            <div className={styles['fixed-title']}>{fixedTitle}</div>
-          </div>
-        )}
+        <div
+          className={styles.fixed}
+          style={{ ...fixedStyle, display: !fixedTitle ? 'none' : 'block' }}
+        >
+          <div className={styles['fixed-title']}>{fixedTitle}</div>
+        </div>
         <div
           className={styles.shortcut}
           onTouchStart={(e) => onShortcutTouchStart(e)}

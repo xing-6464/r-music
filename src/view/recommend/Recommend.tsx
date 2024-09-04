@@ -1,13 +1,11 @@
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, useState } from 'react'
 import { getRecommend } from '@/service/recommend'
 import styles from './Recommend.module.scss'
 import Slider from '@/components/base/slider/Slider'
 import Scroll from '@/components/base/scroll/Scroll'
 import type { Albums, Sliders } from '../../types/type'
-// import Loading from '@/components/base/loading/Loading'
-import Load from '@/components/base/loading/Load'
+import Loading from '@/components/base/loading/Load'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
-import defaultPng from '../../assets/images/default.png'
 import 'react-lazy-load-image-component/src/effects/blur.css'
 
 function Recommend() {
@@ -27,7 +25,7 @@ function Recommend() {
   }, [])
 
   return (
-    <Load isLoading={isLoading}>
+    <Loading isLoading={isLoading}>
       <div className={styles.recommend}>
         <Scroll cls={styles['recommend-content']} click>
           <div>
@@ -42,15 +40,12 @@ function Recommend() {
                 {albums.map((item) => (
                   <li className={styles['item']} key={item.id}>
                     <div className={styles['icon']}>
-                      <Suspense fallback={<img src={defaultPng} />}>
-                        <LazyLoadImage
-                          src={item.pic}
-                          height="60"
-                          width="60"
-                          effect="blur"
-                          placeholderSrc={defaultPng}
-                        />
-                      </Suspense>
+                      <LazyLoadImage
+                        src={item.pic}
+                        height="60"
+                        width="60"
+                        effect="blur"
+                      />
                     </div>
                     <div className={styles['text']}>
                       <h2 className={styles['name']}>{item.username}</h2>
@@ -63,7 +58,7 @@ function Recommend() {
           </div>
         </Scroll>
       </div>
-    </Load>
+    </Loading>
   )
 }
 
