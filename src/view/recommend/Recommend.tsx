@@ -4,7 +4,8 @@ import styles from './Recommend.module.scss'
 import Slider from '@/components/base/slider/Slider'
 import Scroll from '@/components/base/scroll/Scroll'
 import type { Albums, Sliders } from '../../types/type'
-import Loading from '@/components/base/loading/Loading'
+// import Loading from '@/components/base/loading/Loading'
+import Load from '@/components/base/loading/Load'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import defaultPng from '../../assets/images/default.png'
 import 'react-lazy-load-image-component/src/effects/blur.css'
@@ -25,10 +26,8 @@ function Recommend() {
     get()
   }, [])
 
-  if (isLoading) {
-    return <Loading />
-  } else {
-    return (
+  return (
+    <Load isLoading={isLoading}>
       <div className={styles.recommend}>
         <Scroll cls={styles['recommend-content']} click>
           <div>
@@ -64,8 +63,8 @@ function Recommend() {
           </div>
         </Scroll>
       </div>
-    )
-  }
+    </Load>
+  )
 }
 
 export default Recommend
