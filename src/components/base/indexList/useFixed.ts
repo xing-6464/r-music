@@ -3,7 +3,7 @@ import { Singers } from '../../../types/type'
 
 export default function useFixed(data: Singers) {
   const groupRef = useRef<HTMLUListElement | null>(null)
-  const [scrollY, setScrollY] = useState<number>()
+  const [scrollY, setScrollY] = useState<number>(0)
   const [currentIndex, setCurrentIndex] = useState(0) // 当前选中的元素索引
   const [distance, setDistance] = useState(0) // 距离顶部的距离
 
@@ -46,12 +46,12 @@ export default function useFixed(data: Singers) {
     for (let i = 0; i < listHeights.length - 1; i++) {
       const heightTop = listHeights[i]
       const heightBottom = listHeights[i + 1]
-      if (scrollY && scrollY >= heightTop && scrollY <= heightBottom) {
+      if (scrollY >= heightTop && scrollY <= heightBottom) {
         setCurrentIndex(i)
         setDistance(heightBottom - scrollY)
       }
     }
-  }, [scrollY])
+  }, [scrollY, listHeights])
 
   function onScroll(pos: any) {
     setScrollY(-pos.y)

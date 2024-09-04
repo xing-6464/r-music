@@ -16,13 +16,8 @@ interface IndexListProps {
 const IndexList: FC<IndexListProps> = ({ data, select }) => {
   const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } =
     useFixed(data)
-  const {
-    shortcutList,
-    onShortcutTouchEnd,
-    onShortcutTouchMove,
-    onShortcutTouchStart,
-    scrollRef,
-  } = useShortCut(data, groupRef)
+  const { shortcutList, onShortcutTouchMove, onShortcutTouchStart, scrollRef } =
+    useShortCut(data, groupRef)
 
   function onItemClick(item: Singer) {
     select?.(item)
@@ -70,7 +65,6 @@ const IndexList: FC<IndexListProps> = ({ data, select }) => {
           className={styles.shortcut}
           onTouchStart={(e) => onShortcutTouchStart(e)}
           onTouchMove={(e) => onShortcutTouchMove(e)}
-          onTouchEnd={(e) => onShortcutTouchEnd(e)}
         >
           <ul>
             {shortcutList.map((item, index) => {

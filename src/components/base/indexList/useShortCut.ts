@@ -1,5 +1,5 @@
 import { Singers } from '@/types/type'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef } from 'react'
 
 export default function useShortCut(
   data: Singers,
@@ -15,40 +15,28 @@ export default function useShortCut(
     })
   }, [data])
 
-  const [touch, setTouch] = useState<{
-    y1?: number
-    // y2?: number
-    anchorIndex?: number
-  } | null>(null)
+  const touch = useRef<{ y1?: number; y2?: number; anchorIndex?: number }>({})
 
   function stopAndDefault(e: React.TouchEvent<HTMLDivElement>) {
-    // e.preventDefault()
     e.stopPropagation()
   }
 
   function onShortcutTouchStart(e: React.TouchEvent<HTMLDivElement>) {
     stopAndDefault(e)
     const anchorIndex = parseInt((e.target as unknown as any).dataset.index)
-    setTouch((prev) => ({
-      ...prev,
-      y1: e.touches[0].pageY,
-      anchorIndex: anchorIndex,
-    }))
+    touch.current.y1 = e.touches[0].pageY
+    touch.current.anchorIndex = anchorIndex
+
     scrollTo(anchorIndex)
   }
 
   function onShortcutTouchMove(e: React.TouchEvent<HTMLDivElement>) {
     stopAndDefault(e)
-    if (touch && touch.y1 && touch.anchorIndex) {
-      const delta = ((e.touches[0].pageY - touch.y1) / ANCHOR_HEIGHT) | 0
-      const anchorIndex = touch.anchorIndex + delta
-      scrollTo(anchorIndex)
-    }
-    // setTouch((prev) => ({ ...prev }))
-  }
+    touch.current.y2 = e.touches[0].pageY
+    const delta = ((touch.current.y2 - touch.current.y1!) / ANCHOR_HEIGHT) | 0
+    const anchorIndex = touch.current.anchorIndex! + delta
 
-  function onShortcutTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
-    stopAndDefault(e)
+    scrollTo(anchorIndex)
   }
 
   function scrollTo(index: number) {
@@ -65,7 +53,6 @@ export default function useShortCut(
     shortcutList,
     onShortcutTouchMove,
     onShortcutTouchStart,
-    onShortcutTouchEnd,
     scrollRef,
   }
 }
