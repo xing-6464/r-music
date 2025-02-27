@@ -14,13 +14,30 @@ interface IndexListProps {
 }
 
 const IndexList: FC<IndexListProps> = ({ data, select }) => {
-  const { groupRef, fixedTitle, fixedStyle, currentIndex, onScroll } =
-    useFixed(data)
-  const { shortcutList, onShortcutTouchMove, onShortcutTouchStart, scrollRef } =
-    useShortCut(data, groupRef)
+  const {
+    groupRef,
+    fixedTitle,
+    fixedStyle,
+    currentIndex,
+    onScroll,
+    setCurrentIndex,
+  } = useFixed(data)
+  const {
+    shortcutList,
+    onShortcutTouchMove,
+    onShortcutTouchStart,
+    onShortcutTouchEnd,
+    scrollRef,
+  } = useShortCut(data, groupRef, setIndex)
 
   function onItemClick(item: Singer) {
     select?.(item)
+  }
+
+  function setIndex(num: number) {
+    if (num > currentIndex) {
+      setCurrentIndex(num)
+    }
   }
 
   return (
@@ -55,16 +72,16 @@ const IndexList: FC<IndexListProps> = ({ data, select }) => {
             </li>
           ))}
         </ul>
-        <div
-          className={styles.fixed}
-          style={{ ...fixedStyle, display: !fixedTitle ? 'none' : 'block' }}
-        >
-          <div className={styles['fixed-title']}>{fixedTitle}</div>
-        </div>
+        {fixedTitle && (
+          <div className={styles.fixed} style={{ ...fixedStyle }}>
+            <div className={styles['fixed-title']}>{fixedTitle}</div>
+          </div>
+        )}
         <div
           className={styles.shortcut}
           onTouchStart={(e) => onShortcutTouchStart(e)}
           onTouchMove={(e) => onShortcutTouchMove(e)}
+          onTouchEnd={(e) => onShortcutTouchEnd(e)}
         >
           <ul>
             {shortcutList.map((item, index) => {

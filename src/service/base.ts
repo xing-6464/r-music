@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const ERR_OK = 0
 
-axios.defaults.baseURL = '/'
+axios.defaults.baseURL = 'http://113.44.81.153/music'
 
 export function get(url: string, params?: any) {
   return axios

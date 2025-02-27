@@ -4,6 +4,7 @@ import React, { useMemo, useRef } from 'react'
 export default function useShortCut(
   data: Singers,
   groupRef: React.MutableRefObject<HTMLUListElement | null>,
+  setIndex: (index: number) => void,
 ) {
   const ANCHOR_HEIGHT = 18
 
@@ -39,20 +40,26 @@ export default function useShortCut(
     scrollTo(anchorIndex)
   }
 
+  function onShortcutTouchEnd(e: React.TouchEvent<HTMLDivElement>) {
+    stopAndDefault(e)
+  }
+
   function scrollTo(index: number) {
     if (isNaN(index)) {
       return
     }
     index = Math.max(0, Math.min(shortcutList.length - 1, index))
     const targetEl = groupRef.current?.children[index]
-    const scroll = scrollRef.current.scroll.current
-    scroll.scrollToElement(targetEl, 30, false, false)
+    const scroll = scrollRef.current?.scroll
+    setIndex(index)
+    scroll.scrollToElement(targetEl, 40, false, false)
   }
 
   return {
     shortcutList,
     onShortcutTouchMove,
     onShortcutTouchStart,
+    onShortcutTouchEnd,
     scrollRef,
   }
 }

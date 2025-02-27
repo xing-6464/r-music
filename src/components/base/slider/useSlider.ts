@@ -12,25 +12,23 @@ export default function useSlider(
   const [currentPageIndex, setCurrentPageIndex] = useState(0)
 
   useEffect(() => {
-    const sliderVal = (slider.current = new BScroll(
-      wrapperRef.current as HTMLElement,
-      {
-        click: true,
-        scrollX: true,
-        scrollY: false,
-        momentum: false,
-        bounce: false,
-        probeType: 2,
-        slide: true,
-      },
-    ))
+    slider.current = new BScroll(wrapperRef.current as HTMLElement, {
+      click: true,
+      scrollX: true,
+      scrollY: false,
+      momentum: false,
+      bounce: false,
+      probeType: 2,
+      slide: true,
+    })
 
-    sliderVal.on('slideWillChange', (page: { pageX: number }) => {
+    slider.current?.on('slideWillChange', (page: { pageX: number }) => {
       setCurrentPageIndex(page.pageX)
     })
 
     return () => {
-      sliderVal.destroy()
+      slider.current?.destroy()
+      slider.current = null
     }
   }, [])
 

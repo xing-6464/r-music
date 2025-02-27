@@ -3,7 +3,7 @@ import { Singers } from '../../../types/type'
 
 export default function useFixed(data: Singers) {
   const groupRef = useRef<HTMLUListElement | null>(null)
-  const [scrollY, setScrollY] = useState<number>(0)
+  const [scrollY, setScrollY] = useState(0)
   const [currentIndex, setCurrentIndex] = useState(0) // 当前选中的元素索引
   const [distance, setDistance] = useState(0) // 距离顶部的距离
 
@@ -39,7 +39,7 @@ export default function useFixed(data: Singers) {
       heights.push(height)
     }
     return heights
-  }, [data, groupRef.current])
+  }, [groupRef.current])
 
   useEffect(() => {
     if (listHeights.length === 0) return
@@ -63,5 +63,6 @@ export default function useFixed(data: Singers) {
     onScroll,
     fixedStyle,
     currentIndex,
+    setCurrentIndex,
   }
 }

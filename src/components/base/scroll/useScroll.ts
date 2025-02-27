@@ -13,22 +13,22 @@ export default function useScroll(
   const scroll = useRef<null | BScroll>(null)
 
   useEffect(() => {
-    const scrollCurrent = (scroll.current = new BScroll(wrapperRef.current!, {
+    scroll.current = new BScroll(wrapperRef.current!, {
       observeDOM: true,
       ...options,
-    })) as BScroll
+    }) as BScroll
 
     if (options.probeType && options.probeType > 0) {
-      scrollCurrent.on('scroll', (pos: any) => {
+      scroll.current.on('scroll', (pos: any) => {
         emit(pos)
       })
     }
 
     return () => {
-      scrollCurrent.destroy()
-      // scroll.current?.destroy()
+      scroll.current?.destroy()
+      scroll.current = null
     }
   }, [])
 
-  return scroll
+  return scroll.current
 }

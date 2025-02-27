@@ -6,7 +6,6 @@ import Scroll from '@/components/base/scroll/Scroll'
 import type { Albums, Sliders } from '../../types/type'
 import Loading from '@/components/base/loading/Load'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
-import 'react-lazy-load-image-component/src/effects/blur.css'
 
 function Recommend() {
   const [sliders, setSliders] = useState<Sliders>([])

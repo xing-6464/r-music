@@ -4,6 +4,8 @@ import Header from './components/header/Header'
 import Tab from './components/tab/Tab'
 import Player from './components/player/Player'
 
+import 'react-lazy-load-image-component/src/effects/blur.css'
+
 function App() {
   const nav = useNavigate()
   const location = useLocation()
